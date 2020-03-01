@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="EZCat.view.CreateAccountLayoutController">
+    <children>
+        <GridPane layoutX="7.0" prefHeight="298.0" prefWidth="600.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="290.0" minWidth="10.0" prefWidth="117.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="478.0" minWidth="10.0" prefWidth="473.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label text="UserName" />
+                <Label text="Password" GridPane.rowIndex="1" />
+                <TextField fx:id="usernameField" GridPane.columnIndex="1" />
+                <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            </children>
+        </GridPane>
+        <ButtonBar layoutX="400.0" layoutY="360.0" prefHeight="40.0" prefWidth="255.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <buttons>
+                <Button mnemonicParsing="false" onAction="#handleCreateLogin" prefHeight="25.0" prefWidth="114.0" text="Create and Login" />
+                <Button mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
+            </buttons>
+        </ButtonBar>
+    </children>
+</AnchorPane>
