@@ -2,8 +2,11 @@ package EZCat.view;
 
 import EZCat.Movie;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import java.time.LocalDate;
 
 public class MovieEditDialogController {
 
@@ -42,12 +45,18 @@ public class MovieEditDialogController {
     }
 
     /**
-     * Sets the person to be edited in the dialog.
+     * Sets the movie to be edited in the dialog.
      *
      * @param movie
      */
     public void setMovie(Movie movie) {
+        this.movie = movie;
 
+        titleField.setText(movie.getTitle());
+        directorField.setText(movie.getDirector());
+        genreField.setText(movie.getGenre());
+        ratingField.setText(Double.toString(movie.getRating()));
+        yearField.setPromptText("yyyy");
     }
 
     /**
@@ -64,7 +73,22 @@ public class MovieEditDialogController {
      */
     @FXML
     private void handleOk() {
+        if (isInputValid()) {
+            movie.setTitle(titleField.getText());
+            movie.setDirector(directorField.getText());
+            movie.setGenre(genreField.getText());
+            movie.setRating(Double.parseDouble(ratingField.getText()));
+            movie.setYear(1234);
 
+            okClicked = true;
+
+
+            System.out.println(movie.toString());
+
+
+
+            dialogStage.close();
+        }
     }
 
     /**
@@ -81,8 +105,54 @@ public class MovieEditDialogController {
      * @return true if the input is valid
      */
     private boolean isInputValid() {
+        String errorMessage = "";
 
-        return false;
+        if (titleField.getText() == null || titleField.getText().length() == 0) {
+            errorMessage += "No movie name!\n";
+        }
+        if (genreField.getText() == null || genreField.getText().length() == 0) {
+            errorMessage += "No genre!\n";
+        }
+        if (directorField.getText() == null || directorField.getText().length() == 0) {
+            errorMessage += "No director!\n";
+        }
+
+        if (ratingField.getText() == null || ratingField.getText().length() == 0) {
+            errorMessage += "No rating!\n";
+        } else {
+            // try to parse the rating to a Double
+            try {
+                Double.parseDouble(ratingField.getText());
+            } catch (NumberFormatException e) {
+                errorMessage += "No valid rating (must be an number)!\n";
+            }
+        }
+
+        if (yearField.getText() == null || yearField.getText().length() == 0) {
+            errorMessage += "No year!\n";
+        } else {
+            // try to parse the rating to a Integer
+            try {
+                Integer.parseInt(yearField.getText());
+            } catch (NumberFormatException e) {
+                errorMessage += "No valid year (must be an number)!\n";
+            }
+        }
+
+        if (errorMessage.length() == 0) {
+            return true;
+        } else {
+            // Show the error message.
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(dialogStage);
+            alert.setTitle("Invalid Fields");
+            alert.setHeaderText("Please correct the invalid fields");
+            alert.setContentText(errorMessage);
+
+            alert.showAndWait();
+
+            return false;
+        }
     }
 
 }

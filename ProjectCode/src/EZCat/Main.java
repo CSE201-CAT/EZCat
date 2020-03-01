@@ -1,19 +1,39 @@
 package EZCat;
 
+import EZCat.view.CommentsLayoutController;
 import EZCat.view.MainLayoutController;
+import EZCat.view.MovieEditDialogController;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Main extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
+
+    /**
+     * The data as an observable list of Movies.
+     */
+    private ObservableList<Movie> movieData = FXCollections.observableArrayList();
+
+
+    /**
+     * Returns the data as an observable list of Movies.
+     * @return
+     */
+    public ObservableList<Movie> getMovieData() {
+        return movieData;
+    }
 
 
     /**
@@ -41,22 +61,96 @@ public class Main extends Application {
      */
     public void showMovieOverview() {
         try {
-            // Load person overview.
+            // Load movie overview.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("view/MainLayout.fxml"));
             AnchorPane movieOverview = (AnchorPane) loader.load();
 
-            // Set person overview into the center of root layout.
+            // Set movie overview into the center of root layout.
             rootLayout.setCenter(movieOverview);
 
             // Give the controller access to the main app.
             MainLayoutController controller = loader.getController();
             controller.setMainApp(this);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Opens a dialog to edit details for the specified movie. If the user
+     * clicks OK, the changes are saved into the provided movie object and true
+     * is returned.
+     *
+     * @param movie the movie object to be edited
+     * @return true if the user clicked OK, false otherwise.
+     */
+    public boolean showMovieEditDialog(Movie movie) {
+        try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/MovieEditDialog.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Edit Movie");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Set the movie into the controller.
+            MovieEditDialogController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setMovie(movie);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Opens a dialog to view and add comments for the specified movie.
+     *
+     * @param movie the movie object to be viewed
+     * @return true if the user clicked OK, false otherwise.
+     */
+    public boolean showMovieCommentsDialog(Movie movie) {
+        try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/commentsLayout.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Movie Comments");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Set the movie into the controller.
+            CommentsLayoutController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setMovieComments(movie);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
 
 
 
@@ -73,7 +167,9 @@ public class Main extends Application {
      * Constructor
      */
     public Main() {
-
+        // Add some sample data
+        movieData.add(new Movie("title01", "genre01"));
+        movieData.add(new Movie("title02", "genre02"));
     }
 
 
@@ -91,4 +187,5 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
 }
