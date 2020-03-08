@@ -31,6 +31,7 @@ public class DatabaseConnector {
             newMovie.setStudio(testR.getString("studio"));
             newMovie.setYear(testR.getInt("yr"));
             newMovie.setDirector(testR.getString("director"));
+            newMovie.setId(testR.getInt("movie_id"));
 
             // add to list
             movieDataList.add(newMovie);
@@ -51,6 +52,17 @@ public class DatabaseConnector {
         preparedStatement.setString(3, mv.getStudio());
         preparedStatement.setInt(4, mv.getYear());
         preparedStatement.setString(5, mv.getDirector());
+
+        // execute prepared statement
+        preparedStatement.execute();
+    }
+
+    public void deleteMovie(Movie mv) throws SQLException {
+        // setup delete statement
+        String query = " DELETE FROM movie where movie_id = ?";
+        System.out.println(mv.getId());
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setInt(1, mv.getId());
 
         // execute prepared statement
         preparedStatement.execute();

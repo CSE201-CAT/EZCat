@@ -11,6 +11,7 @@ public class Movie {
     private final StringProperty director;
     private final DoubleProperty rating;
     private final StringProperty studio;
+    private final IntegerProperty id;
 
     /**
      * Full Constructor
@@ -27,6 +28,7 @@ public class Movie {
         this.rating = new SimpleDoubleProperty(5.0);
         this.year = new SimpleIntegerProperty(1234);
         this.studio = new SimpleStringProperty("a studio");
+        this.id = new SimpleIntegerProperty(-1);
     }
 
     /**
@@ -118,5 +120,17 @@ public class Movie {
 
     public StringProperty studioProperty() {
         return studio;
+    }
+
+    public int getId() {
+        return id.get();
+    }
+
+    public void setId(int id) {
+        this.id.set(id);
+    }
+
+    public IntegerProperty idProperty() {
+        return id;
     }
 }

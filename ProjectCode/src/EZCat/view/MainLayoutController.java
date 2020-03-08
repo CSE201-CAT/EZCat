@@ -69,8 +69,12 @@ public class MainLayoutController {
     private void handleDeleteMovie() {
         int selectedIndex = movieTable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
+            try {
+                mainApp.dbCon.deleteMovie(movieTable.getItems().get(selectedIndex));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             movieTable.getItems().remove(selectedIndex);
-            // TODO delete from database
         } else {
             // Nothing selected.
             Alert alert = new Alert(Alert.AlertType.WARNING);
