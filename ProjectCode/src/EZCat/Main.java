@@ -21,7 +21,7 @@ public class Main extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
-    protected Connection databaseConnection;
+    public DatabaseConnector dbCon;
 
     /**
      * The data as an observable list of Movies.
@@ -169,9 +169,9 @@ public class Main extends Application {
      * Constructor
      */
     public Main() {
-        // Add some sample data
-        movieData.add(new Movie("title01", "genre01"));
-        movieData.add(new Movie("title02", "genre02"));
+////         Add some sample data
+//        movieData.add(new Movie("title01", "genre01"));
+//        movieData.add(new Movie("title02", "genre02"));
 
         // connect to the database
         try {
@@ -180,17 +180,23 @@ public class Main extends Application {
             String username = "root";
             String password = "cse201MovieTeam";
 
-            databaseConnection = DriverManager.getConnection("jdbc:mysql://35.239.39.240/ezcat_db",
-                    username, password);
+            dbCon = new DatabaseConnector(username, password);
 
-//            // test connection -- uncomment out below
-//            Statement testS = databaseConnection.createStatement();
-//            ResultSet testR = testS.executeQuery("Select * from movie");
-//            while (testR.next()) {
-//                System.out.println(testR.getInt(1) + ", " + testR.getString(2) + ", "
-//                        + testR.getString(3) + ", " + testR.getString(4) + ", "
-//                        + testR.getInt(5) + ", " + testR.getString(6));
-//            }
+            // test connection -- uncomment out below
+            Statement populateTable = dbCon.databaseConnection.createStatement();
+            ResultSet populateResult = populateTable.executeQuery("Select * from movie");
+            // Add to the list
+            while (populateResult.next()) {
+                Movie newMovie = new Movie();
+                newMovie.setTitle(populateResult.getString("title"));
+                newMovie.setGenre(populateResult.getString("genre"));
+                newMovie.setStudio(populateResult.getString("studio"));
+                newMovie.setYear(populateResult.getInt("yr"));
+                newMovie.setDirector(populateResult.getString("director"));
+
+                // add to list
+                movieData.add(newMovie);
+            }
 
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();

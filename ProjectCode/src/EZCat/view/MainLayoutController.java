@@ -2,12 +2,13 @@ package EZCat.view;
 
 import EZCat.Main;
 import EZCat.Movie;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+
+import java.sql.SQLException;
 
 public class MainLayoutController {
 
@@ -30,6 +31,8 @@ public class MainLayoutController {
     private Label directorLabel;
     @FXML
     private Label ratingLabel;
+    @FXML
+    private Label studioLabel;
 
 
     /**
@@ -46,6 +49,7 @@ public class MainLayoutController {
             ratingLabel.setText(Double.toString(movie.getRating()));
             directorLabel.setText(movie.getDirector());
             yearLabel.setText(Integer.toString(movie.getYear()));
+            studioLabel.setText(movie.getStudio());
         } else {
             // Movie is null, remove all the text.
             titleLabel.setText("");
@@ -53,6 +57,7 @@ public class MainLayoutController {
             ratingLabel.setText("");
             directorLabel.setText("");
             yearLabel.setText("");
+            studioLabel.setText("");
         }
     }
 
@@ -65,6 +70,7 @@ public class MainLayoutController {
         int selectedIndex = movieTable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
             movieTable.getItems().remove(selectedIndex);
+            // TODO delete from database
         } else {
             // Nothing selected.
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -87,6 +93,12 @@ public class MainLayoutController {
         boolean okClicked = mainApp.showMovieEditDialog(tmpMovie);
         if (okClicked) {
             mainApp.getMovieData().add(tmpMovie);
+            try {
+                mainApp.dbCon.addMovie(tmpMovie);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -101,6 +113,7 @@ public class MainLayoutController {
             boolean okClicked = mainApp.showMovieEditDialog(selectedMovie);
             if (okClicked) {
                 showMovieDetails(selectedMovie);
+                // TODO Edit to database
             }
         } else {
             // Nothing selected.

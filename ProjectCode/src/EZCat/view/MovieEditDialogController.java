@@ -20,6 +20,8 @@ public class MovieEditDialogController {
     private TextField directorField;
     @FXML
     private TextField ratingField;
+    @FXML
+    private TextField studioField;
 
 
 
@@ -57,6 +59,7 @@ public class MovieEditDialogController {
         genreField.setText(movie.getGenre());
         ratingField.setText(Double.toString(movie.getRating()));
         yearField.setPromptText("yyyy");
+        studioField.setText(movie.getStudio());
     }
 
     /**
@@ -78,7 +81,8 @@ public class MovieEditDialogController {
             movie.setDirector(directorField.getText());
             movie.setGenre(genreField.getText());
             movie.setRating(Double.parseDouble(ratingField.getText()));
-            movie.setYear(1234);
+            movie.setYear(Integer.parseInt(yearField.getText()));
+            movie.setStudio(studioField.getText());
 
             okClicked = true;
 
@@ -137,6 +141,10 @@ public class MovieEditDialogController {
             } catch (NumberFormatException e) {
                 errorMessage += "No valid year (must be an number)!\n";
             }
+        }
+
+        if (studioField.getText() == null || studioField.getText().length() == 0) {
+            errorMessage += "No studio name!\n";
         }
 
         if (errorMessage.length() == 0) {

@@ -10,6 +10,7 @@ public class Movie {
     private final IntegerProperty year;
     private final StringProperty director;
     private final DoubleProperty rating;
+    private final StringProperty studio;
 
     /**
      * Full Constructor
@@ -25,6 +26,7 @@ public class Movie {
         this.director = new SimpleStringProperty("some guy");
         this.rating = new SimpleDoubleProperty(5.0);
         this.year = new SimpleIntegerProperty(1234);
+        this.studio = new SimpleStringProperty("a studio");
     }
 
     /**
@@ -104,5 +106,17 @@ public class Movie {
 
     public IntegerProperty yearProperty() {
         return year;
+    }
+
+    public String getStudio() {
+        return studio.get();
+    }
+
+    public void setStudio(String studio) {
+        this.studio.set(studio);
+    }
+
+    public StringProperty studioProperty() {
+        return studio;
     }
 }
