@@ -47,6 +47,7 @@ public class Movie {
                 ", year=" + year +
                 ", director=" + director +
                 ", rating=" + rating +
+                ", studio=" + studio +
                 '}';
     }
 

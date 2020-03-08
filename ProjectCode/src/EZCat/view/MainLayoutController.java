@@ -48,7 +48,7 @@ public class MainLayoutController {
             genreLabel.setText(movie.getGenre());
             ratingLabel.setText(Double.toString(movie.getRating()));
             directorLabel.setText(movie.getDirector());
-            yearLabel.setText(Integer.toString(movie.getYear()));
+            yearLabel.setText(String.valueOf((movie.getYear())));
             studioLabel.setText(movie.getStudio());
         } else {
             // Movie is null, remove all the text.
@@ -117,7 +117,11 @@ public class MainLayoutController {
             boolean okClicked = mainApp.showMovieEditDialog(selectedMovie);
             if (okClicked) {
                 showMovieDetails(selectedMovie);
-                // TODO Edit to database
+                try {
+                    mainApp.dbCon.updateMovie(selectedMovie);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             // Nothing selected.

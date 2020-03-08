@@ -67,4 +67,19 @@ public class DatabaseConnector {
         // execute prepared statement
         preparedStatement.execute();
     }
+
+    public void updateMovie(Movie mv) throws SQLException {
+        // setup update statement
+        String query = "update movie set title = ?, genre = ?, studio = ?, yr = ?, director = ? where movie_id = ?";
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setString(1, mv.getTitle());
+        preparedStatement.setString(2, mv.getGenre());
+        preparedStatement.setString(3, mv.getStudio());
+        preparedStatement.setInt(4, mv.getYear());
+        preparedStatement.setString(5, mv.getDirector());
+        preparedStatement.setInt(6, mv.getId());
+
+        // execute prepared statement
+        preparedStatement.execute();
+    }
 }
