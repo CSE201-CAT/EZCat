@@ -14,12 +14,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.*;
 import java.util.List;
 
 public class Main extends Application {
 
     private Stage primaryStage;
     private BorderPane rootLayout;
+    protected Connection databaseConnection;
 
     /**
      * The data as an observable list of Movies.
@@ -170,6 +172,30 @@ public class Main extends Application {
         // Add some sample data
         movieData.add(new Movie("title01", "genre01"));
         movieData.add(new Movie("title02", "genre02"));
+
+        // connect to the database
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            String username = "root";
+            String password = "cse201MovieTeam";
+
+            databaseConnection = DriverManager.getConnection("jdbc:mysql://35.239.39.240/ezcat_db",
+                    username, password);
+
+//            // test connection -- uncomment out below
+//            Statement testS = databaseConnection.createStatement();
+//            ResultSet testR = testS.executeQuery("Select * from movie");
+//            while (testR.next()) {
+//                System.out.println(testR.getInt(1) + ", " + testR.getString(2) + ", "
+//                        + testR.getString(3) + ", " + testR.getString(4) + ", "
+//                        + testR.getInt(5) + ", " + testR.getString(6));
+//            }
+
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("RIP DB CONNECTION");
+        }
     }
 
 
