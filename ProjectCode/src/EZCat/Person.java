@@ -26,8 +26,7 @@ public class Person {
     public Person(String username,
                  String password) {
         this.username = new SimpleStringProperty(username);
-        this.password = new SimpleStringProperty(PasswordEncrypt.hashPassword(password,
-                PasswordEncrypt.generateSalt(512).get()).get());
+        this.password = new SimpleStringProperty(password);
 
         // Some dummy data, for testing.
         this.isAdmin = new SimpleBooleanProperty(false);
@@ -58,9 +57,7 @@ public class Person {
         return password.get();
     }
 
-    public void setPassword(String password) {
-        this.password.set(PasswordEncrypt.hashPassword(password,
-                PasswordEncrypt.generateSalt(512).get()).get());
+    public void setPassword(String password) { this.password.set(password);
     }
 
     public StringProperty passwordProperty() {

@@ -61,6 +61,7 @@ public class LoginLayoutController {
         System.out.println(usernameField.getText());
         System.out.println(passwordField.getText());
         System.out.println(person.getPassword());
+        System.out.println();
 
         System.out.println(person.toString());
 
