@@ -1,6 +1,7 @@
 package EZCat;
 
 import EZCat.view.CommentsLayoutController;
+import EZCat.view.LoginLayoutController;
 import EZCat.view.MainLayoutController;
 import EZCat.view.MovieEditDialogController;
 import javafx.application.Application;
@@ -15,6 +16,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main extends Application {
@@ -22,6 +24,7 @@ public class Main extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
     public DatabaseConnector dbCon;
+    public boolean isAdmin;
 
     /**
      * The data as an observable list of Movies.
@@ -214,6 +217,53 @@ public class Main extends Application {
         initRootLayout();
 
         showMovieOverview();
+
+        if (!displayLogin()) {
+            // did not log in but got around login box
+            System.exit(0);
+        }
+    }
+
+    /**
+     * Opens a dialog to login to the application.
+     *
+     * @return true if the user logged in, false otherwise.
+     */
+    public boolean displayLogin() {
+        try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/loginLayout.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Login To EZCat");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Set the login controller.
+            LoginLayoutController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            if (controller.isAuthorised("", dbCon)) {
+                // user is authorised
+                isAdmin = true;
+            } else {
+                // user is not authorised
+                isAdmin = false;
+            }
+
+            return controller.isOkClicked();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 
 

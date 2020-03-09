@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DatabaseConnector {
     protected Connection databaseConnection;
@@ -81,5 +82,76 @@ public class DatabaseConnector {
 
         // execute prepared statement
         preparedStatement.execute();
+    }
+
+    public ArrayList<String> listAdmins() throws SQLException {
+        Statement testS = databaseConnection.createStatement();
+        ResultSet testR = testS.executeQuery("SELECT username FROM people WHERE isAdmin = 1");
+
+        // hold the movies
+       ArrayList<String> adminUsers = new ArrayList<>();
+
+        // Add to the list
+        while (testR.next()) {
+            // add to list
+            adminUsers.add(testR.getString("username"));
+        }
+
+        return adminUsers;
+    }
+
+    public boolean loginUser(String usern, String passwd) throws SQLException {
+        String query = "SELECT username FROM people WHERE passwd = ?";
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setString(1, passwd);
+
+        // execute prepared statement
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        // Add to the list
+        while (resultSet.next()) {
+            // add to list
+            if (usern.equals(resultSet.getString("username"))) {
+                return true;
+            }
+            System.out.println(resultSet.getString("username"));
+        }
+
+        // user not found
+        return false;
+    }
+
+    public boolean createUser(Person person) throws SQLException {
+        String query = "SELECT username FROM people";
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+
+        // execute prepared statement
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        // Add to the list
+        while (resultSet.next()) {
+            // add to list
+            if (person.getUsername().equals(resultSet.getString("username"))) {
+                System.out.println("User Exists");
+                return false;
+            }
+            System.out.println(resultSet.getString("username"));
+        }
+
+        // setup insert statement
+        String query2 = " INSERT INTO people (username, passwd, isAdmin) " +
+                "VALUES (?, ?, ?);";
+
+        // create prepared statement
+        PreparedStatement preparedStatement2 = databaseConnection.prepareStatement(query2);
+        preparedStatement2.setString(1, person.getUsername());
+        preparedStatement2.setString(2, person.getPassword());
+        preparedStatement2.setInt(3, person.getAdmin() ? 1 : 0);
+
+        // execute prepared statement
+        preparedStatement2.execute();
+
+        // user account made / now logged in
+        return true;
     }
 }

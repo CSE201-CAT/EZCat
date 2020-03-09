@@ -9,6 +9,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class MainLayoutController {
 
@@ -134,6 +135,7 @@ public class MainLayoutController {
             alert.showAndWait();
         }
     }
+
 
     @FXML
     private void handleViewCommentsPage() {
