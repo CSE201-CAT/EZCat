@@ -12,6 +12,7 @@ public class Movie {
     private final DoubleProperty rating;
     private final StringProperty studio;
     private final IntegerProperty id;
+    private final BooleanProperty isPublished;
 
     /**
      * Full Constructor
@@ -29,6 +30,7 @@ public class Movie {
         this.year = new SimpleIntegerProperty(1234);
         this.studio = new SimpleStringProperty("a studio");
         this.id = new SimpleIntegerProperty(-1);
+        this.isPublished = new SimpleBooleanProperty(false);
     }
 
     /**
@@ -133,5 +135,17 @@ public class Movie {
 
     public IntegerProperty idProperty() {
         return id;
+    }
+
+    public boolean getPublished() {
+        return isPublished.get();
+    }
+
+    public void setIsPublished(boolean flag) {
+        this.isPublished.set(flag);
+    }
+
+    public BooleanProperty isPublishedProperty() {
+        return isPublished;
     }
 }

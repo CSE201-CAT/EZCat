@@ -197,6 +197,7 @@ public class Main extends Application {
                 newMovie.setYear(populateResult.getInt("yr"));
                 newMovie.setDirector(populateResult.getString("director"));
                 newMovie.setId(populateResult.getInt("movie_id"));
+                newMovie.setIsPublished(populateResult.getInt("isPublished") == 1);
 
                 // add to list
                 movieData.add(newMovie);

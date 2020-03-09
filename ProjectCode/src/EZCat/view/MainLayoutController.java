@@ -99,6 +99,10 @@ public class MainLayoutController {
         if (okClicked) {
             mainApp.getMovieData().add(tmpMovie);
             try {
+                if (mainApp.isAdmin) {
+                    // user is admin - autopublish movie
+                    tmpMovie.setIsPublished(true);
+                }
                 mainApp.dbCon.addMovie(tmpMovie);
 
             } catch (SQLException e) {
@@ -119,6 +123,10 @@ public class MainLayoutController {
             if (okClicked) {
                 showMovieDetails(selectedMovie);
                 try {
+                    if (mainApp.isAdmin) {
+                        // user is admin - autopublish movie
+                        selectedMovie.setIsPublished(true);
+                    }
                     mainApp.dbCon.updateMovie(selectedMovie);
                 } catch (SQLException e) {
                     e.printStackTrace();

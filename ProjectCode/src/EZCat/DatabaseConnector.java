@@ -33,6 +33,7 @@ public class DatabaseConnector {
             newMovie.setYear(testR.getInt("yr"));
             newMovie.setDirector(testR.getString("director"));
             newMovie.setId(testR.getInt("movie_id"));
+            newMovie.setIsPublished(testR.getInt("isPublished") == 1);
 
             // add to list
             movieDataList.add(newMovie);
@@ -43,8 +44,8 @@ public class DatabaseConnector {
 
     public void addMovie(Movie mv) throws SQLException {
         // setup insert statement
-        String query = " INSERT INTO movie (title, genre, studio, yr, director) " +
-                "VALUES (?, ?, ?, ?, ?);";
+        String query = " INSERT INTO movie (title, genre, studio, yr, director, isPublished) " +
+                "VALUES (?, ?, ?, ?, ?, ?);";
 
         // create prepared statement
         PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
@@ -53,6 +54,7 @@ public class DatabaseConnector {
         preparedStatement.setString(3, mv.getStudio());
         preparedStatement.setInt(4, mv.getYear());
         preparedStatement.setString(5, mv.getDirector());
+        preparedStatement.setInt(6, mv.getPublished() ? 1 : 0);
 
         // execute prepared statement
         preparedStatement.execute();
@@ -71,7 +73,7 @@ public class DatabaseConnector {
 
     public void updateMovie(Movie mv) throws SQLException {
         // setup update statement
-        String query = "update movie set title = ?, genre = ?, studio = ?, yr = ?, director = ? where movie_id = ?";
+        String query = "update movie set title = ?, genre = ?, studio = ?, yr = ?, director = ?, isPublished = ? where movie_id = ?";
         PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
         preparedStatement.setString(1, mv.getTitle());
         preparedStatement.setString(2, mv.getGenre());
@@ -79,6 +81,7 @@ public class DatabaseConnector {
         preparedStatement.setInt(4, mv.getYear());
         preparedStatement.setString(5, mv.getDirector());
         preparedStatement.setInt(6, mv.getId());
+        preparedStatement.setInt(7, mv.getPublished() ? 1 : 0);
 
         // execute prepared statement
         preparedStatement.execute();

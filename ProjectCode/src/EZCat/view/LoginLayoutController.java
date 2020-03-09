@@ -29,57 +29,61 @@ public class LoginLayoutController {
 
     @FXML
     private void handleMakeAccountButton() {
-        person.setUsername(usernameField.getText());
-        person.setPassword(passwordField.getText());
-        System.out.println(usernameField.getText());
-        System.out.println(passwordField.getText());
-        System.out.println(person.getPassword());
+        if (isInputValid()) {
+            person.setUsername(usernameField.getText());
+            person.setPassword(passwordField.getText());
+            System.out.println(usernameField.getText());
+            System.out.println(passwordField.getText());
+            System.out.println(person.getPassword());
 
-        System.out.println(person.toString());
+            System.out.println(person.toString());
 
-        try {
-            DatabaseConnector dbCon = new DatabaseConnector("general", "generalPublicPassword");
-            if (dbCon.createUser(person)) {
-                System.out.println("Logged in and Account Made");
-                okClicked = true;
-            } else {
-                okClicked = false;
-                System.out.println("invalid / already exists");
+            try {
+                DatabaseConnector dbCon = new DatabaseConnector("general", "generalPublicPassword");
+                if (dbCon.createUser(person)) {
+                    System.out.println("Logged in and Account Made");
+                    okClicked = true;
+                } else {
+                    okClicked = false;
+                    System.out.println("invalid / already exists");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
-        dialogStage.close();
+            dialogStage.close();
+        }
     }
 
 
     @FXML
     private void handleLogin() {
-        person.setUsername(usernameField.getText());
-        person.setPassword(passwordField.getText());
-        System.out.println(usernameField.getText());
-        System.out.println(passwordField.getText());
-        System.out.println(person.getPassword());
-        System.out.println();
+        if (isInputValid()) {
+            person.setUsername(usernameField.getText());
+            person.setPassword(passwordField.getText());
+            System.out.println(usernameField.getText());
+            System.out.println(passwordField.getText());
+            System.out.println(person.getPassword());
+            System.out.println();
 
-        System.out.println(person.toString());
+            System.out.println(person.toString());
 
-        try {
-            DatabaseConnector dbCon = new DatabaseConnector("general", "generalPublicPassword");
-            if (dbCon.loginUser(person.getUsername(), person.getPassword())) {
-                // true if user with password found in DB
-                System.out.println("Logged in");
-                okClicked = true;
-            } else {
-                okClicked = false;
-                System.out.println("invalid");
+            try {
+                DatabaseConnector dbCon = new DatabaseConnector("general", "generalPublicPassword");
+                if (dbCon.loginUser(person.getUsername(), person.getPassword())) {
+                    // true if user with password found in DB
+                    System.out.println("Logged in");
+                    okClicked = true;
+                } else {
+                    okClicked = false;
+                    System.out.println("invalid");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
-        dialogStage.close();
+            dialogStage.close();
+        }
     }
 
     public boolean isAuthorised(String username, DatabaseConnector dbCon) {
@@ -128,6 +132,49 @@ public class LoginLayoutController {
     public boolean isOkClicked() {
         return okClicked;
     }
+
+    /**
+     * Validates the user input in the text fields.
+     *
+     * @return true if the input is valid
+     */
+    private boolean isInputValid() {
+        String errorMessage = "";
+
+        if (usernameField.getText() == null || usernameField.getText().length() == 0) {
+            errorMessage += "No username!\n";
+        }
+        if (passwordField.getText() == null || passwordField.getText().length() == 0) {
+            errorMessage += "No password!\n";
+        }
+
+        DatabaseConnector dbCon = null;
+        try {
+            dbCon = new DatabaseConnector("general", "generalPublicPassword");
+            if (!dbCon.loginUser(person.getUsername(), person.getPassword())) {
+                // true if exists
+                errorMessage += "No username exists with the given password!\n";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if (errorMessage.length() == 0) {
+            return true;
+        } else {
+            // Show the error message.
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(dialogStage);
+            alert.setTitle("Invalid Fields");
+            alert.setHeaderText("Please correct the issues");
+            alert.setContentText(errorMessage);
+
+            alert.showAndWait();
+
+            return false;
+        }
+    }
+
 
 
 }
