@@ -177,8 +177,8 @@ public class Main extends Application {
         try {
             Class.forName("com.mysql.jdbc.Driver");
 
-            String username = "root";
-            String password = "cse201MovieTeam";
+            String username = "general";
+            String password = "generalPublicPassword";
 
             dbCon = new DatabaseConnector(username, password);
 
