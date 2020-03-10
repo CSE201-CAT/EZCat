@@ -24,7 +24,8 @@ public class Main extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
     public DatabaseConnector dbCon;
-    public boolean isAdmin;
+    public boolean isAdmin = false;
+    public Person userPerson;
 
     /**
      * The data as an observable list of Movies.
@@ -185,9 +186,14 @@ public class Main extends Application {
 
             dbCon = new DatabaseConnector(username, password);
 
-            // test connection -- uncomment out below
             Statement populateTable = dbCon.databaseConnection.createStatement();
-            ResultSet populateResult = populateTable.executeQuery("Select * from movie");
+            ResultSet populateResult;
+            if (isAdmin) {
+                 populateResult = populateTable.executeQuery("Select * from movie where isPublished = 0");
+            } else {
+                populateResult = populateTable.executeQuery("Select * from movie where isPublished = 1");
+            }
+
             // Add to the list
             while (populateResult.next()) {
                 Movie newMovie = new Movie();
@@ -219,10 +225,16 @@ public class Main extends Application {
 
         showMovieOverview();
 
-        if (!displayLogin()) {
+
+        userPerson = displayLogin();
+//        System.out.println("Person: " + userPerson);
+        if (userPerson == null) {
             // did not log in but got around login box
             System.exit(0);
         }
+
+        // set if user is admin or not
+        isAdmin = userPerson.getAdmin();
     }
 
     /**
@@ -230,7 +242,7 @@ public class Main extends Application {
      *
      * @return true if the user logged in, false otherwise.
      */
-    public boolean displayLogin() {
+    public Person displayLogin() {
         try {
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
@@ -255,15 +267,53 @@ public class Main extends Application {
             if (controller.isAuthorised("", dbCon)) {
                 // user is authorised
                 isAdmin = true;
+
+                try {
+                    movieData.clear();
+                    Class.forName("com.mysql.jdbc.Driver");
+
+                    String username = "general";
+                    String password = "generalPublicPassword";
+
+                    dbCon = new DatabaseConnector(username, password);
+
+                    Statement populateTable = dbCon.databaseConnection.createStatement();
+                    ResultSet populateResult;
+                    if (isAdmin) {
+                        populateResult = populateTable.executeQuery("Select * from movie where isPublished = 0");
+                    } else {
+                        populateResult = populateTable.executeQuery("Select * from movie where isPublished = 1");
+                    }
+
+                    // Add to the list
+                    while (populateResult.next()) {
+                        Movie newMovie = new Movie();
+                        newMovie.setTitle(populateResult.getString("title"));
+                        newMovie.setGenre(populateResult.getString("genre"));
+                        newMovie.setStudio(populateResult.getString("studio"));
+                        newMovie.setYear(populateResult.getInt("yr"));
+                        newMovie.setDirector(populateResult.getString("director"));
+                        newMovie.setId(populateResult.getInt("movie_id"));
+                        newMovie.setIsPublished(populateResult.getInt("isPublished") == 1);
+
+                        // add to list
+                        movieData.add(newMovie);
+                    }
+
+                } catch (SQLException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    System.out.println("RIP DB CONNECTION");
+                }
             } else {
                 // user is not authorised
                 isAdmin = false;
             }
 
+
             return controller.isOkClicked();
         } catch (Exception ex) {
             ex.printStackTrace();
-            return false;
+            return null;
         }
     }
 

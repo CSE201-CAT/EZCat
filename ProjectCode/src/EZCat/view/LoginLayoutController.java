@@ -131,8 +131,8 @@ public class LoginLayoutController {
      *
      * @return
      */
-    public boolean isOkClicked() {
-        return okClicked;
+    public Person isOkClicked() {
+        return person;
     }
 
     /**
