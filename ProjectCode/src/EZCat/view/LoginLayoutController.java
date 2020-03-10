@@ -29,9 +29,9 @@ public class LoginLayoutController {
 
     @FXML
     private void handleMakeAccountButton() {
-        if (isInputValid()) {
-            person.setUsername(usernameField.getText());
-            person.setPassword(passwordField.getText());
+        person.setUsername(usernameField.getText());
+        person.setPassword(passwordField.getText());
+        if (isInputValid(true)) {
             System.out.println(usernameField.getText());
             System.out.println(passwordField.getText());
             System.out.println(person.getPassword());
@@ -58,7 +58,9 @@ public class LoginLayoutController {
 
     @FXML
     private void handleLogin() {
-        if (isInputValid()) {
+        person.setUsername(usernameField.getText());
+        person.setPassword(passwordField.getText());
+        if (isInputValid(false)) {
             person.setUsername(usernameField.getText());
             person.setPassword(passwordField.getText());
             System.out.println(usernameField.getText());
@@ -138,7 +140,7 @@ public class LoginLayoutController {
      *
      * @return true if the input is valid
      */
-    private boolean isInputValid() {
+    private boolean isInputValid(boolean isCreating) {
         String errorMessage = "";
 
         if (usernameField.getText() == null || usernameField.getText().length() == 0) {
@@ -151,8 +153,9 @@ public class LoginLayoutController {
         DatabaseConnector dbCon = null;
         try {
             dbCon = new DatabaseConnector("general", "generalPublicPassword");
-            if (!dbCon.loginUser(person.getUsername(), person.getPassword())) {
-                // true if exists
+            if (!dbCon.loginUser(person.getUsername(), person.getPassword()) && !isCreating) {
+                // does not exist and account is not being created
+                System.out.println(person.getUsername() + "-" + person.getPassword());
                 errorMessage += "No username exists with the given password!\n";
             }
         } catch (SQLException e) {
