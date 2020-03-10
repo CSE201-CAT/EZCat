@@ -1,9 +1,6 @@
 package EZCat;
 
-import EZCat.view.CommentsLayoutController;
-import EZCat.view.LoginLayoutController;
-import EZCat.view.MainLayoutController;
-import EZCat.view.MovieEditDialogController;
+import EZCat.view.*;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,8 +13,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main extends Application {
 
@@ -26,6 +21,7 @@ public class Main extends Application {
     public DatabaseConnector dbCon;
     public boolean isAdmin = false;
     public Person userPerson;
+    private RootLayoutController rootLayoutController;
 
     /**
      * The data as an observable list of Movies.
@@ -42,6 +38,7 @@ public class Main extends Application {
     }
 
 
+
     /**
      * Initializes the root layout.
      */
@@ -55,6 +52,10 @@ public class Main extends Application {
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
+
+            // Give the controller access to the main app.
+            rootLayoutController = loader.getController();
+            rootLayoutController.setMainApp(this);
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -173,10 +174,6 @@ public class Main extends Application {
      * Constructor
      */
     public Main() {
-////         Add some sample data
-//        movieData.add(new Movie("title01", "genre01"));
-//        movieData.add(new Movie("title02", "genre02"));
-
         // connect to the database
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -186,32 +183,51 @@ public class Main extends Application {
 
             dbCon = new DatabaseConnector(username, password);
 
-            Statement populateTable = dbCon.databaseConnection.createStatement();
-            ResultSet populateResult;
-            if (isAdmin) {
-                 populateResult = populateTable.executeQuery("Select * from movie where isPublished = 0");
-            } else {
-                populateResult = populateTable.executeQuery("Select * from movie where isPublished = 1");
-            }
-
-            // Add to the list
-            while (populateResult.next()) {
-                Movie newMovie = new Movie();
-                newMovie.setTitle(populateResult.getString("title"));
-                newMovie.setGenre(populateResult.getString("genre"));
-                newMovie.setStudio(populateResult.getString("studio"));
-                newMovie.setYear(populateResult.getInt("yr"));
-                newMovie.setDirector(populateResult.getString("director"));
-                newMovie.setId(populateResult.getInt("movie_id"));
-                newMovie.setIsPublished(populateResult.getInt("isPublished") == 1);
-
-                // add to list
-                movieData.add(newMovie);
-            }
+            populateMovieTable(0);
 
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             System.out.println("RIP DB CONNECTION");
+        }
+    }
+
+    /**
+     * Populate the movie table with movies
+     * @param adminListType 0 = published, 1 = new / edit requests, 2 = delete requests
+     * @throws SQLException
+     */
+    public void populateMovieTable(int adminListType) throws SQLException {
+        if (userPerson != null) {
+            isAdmin = userPerson.getAdmin();
+        }
+        movieData.clear();
+        Statement populateTable = dbCon.databaseConnection.createStatement();
+        ResultSet populateResult;
+        if (isAdmin && adminListType == 1) {
+            populateResult = populateTable.executeQuery("Select * from movie where isPublished = 0 and deleteRequest = 0");
+        } else if (isAdmin && adminListType == 2) {
+            populateResult = populateTable.executeQuery("Select * from movie where deleteRequest = 1");
+        } else {
+            populateResult = populateTable.executeQuery("Select * from movie where isPublished = 1");
+        }
+
+        // Add to the list
+        movieTablePopulationLoop(populateResult, movieData);
+    }
+
+    public static void movieTablePopulationLoop(ResultSet populateResult, ObservableList<Movie> movieData) throws SQLException {
+        while (populateResult.next()) {
+            Movie newMovie = new Movie();
+            newMovie.setTitle(populateResult.getString("title"));
+            newMovie.setGenre(populateResult.getString("genre"));
+            newMovie.setStudio(populateResult.getString("studio"));
+            newMovie.setYear(populateResult.getInt("yr"));
+            newMovie.setDirector(populateResult.getString("director"));
+            newMovie.setId(populateResult.getInt("movie_id"));
+            newMovie.setIsPublished(populateResult.getInt("isPublished") == 1);
+
+            // add to list
+            movieData.add(newMovie);
         }
     }
 
@@ -227,7 +243,6 @@ public class Main extends Application {
 
 
         userPerson = displayLogin();
-//        System.out.println("Person: " + userPerson);
         if (userPerson == null) {
             // did not log in but got around login box
             System.exit(0);
@@ -267,7 +282,8 @@ public class Main extends Application {
             if (controller.isAuthorised("", dbCon)) {
                 // user is authorised
                 isAdmin = true;
-
+                rootLayoutController.deleteViewButton.setDisable(false);
+                rootLayoutController.newEditViewButton.setDisable(false);
                 try {
                     movieData.clear();
                     Class.forName("com.mysql.jdbc.Driver");
@@ -277,36 +293,12 @@ public class Main extends Application {
 
                     dbCon = new DatabaseConnector(username, password);
 
-                    Statement populateTable = dbCon.databaseConnection.createStatement();
-                    ResultSet populateResult;
-                    if (isAdmin) {
-                        populateResult = populateTable.executeQuery("Select * from movie where isPublished = 0");
-                    } else {
-                        populateResult = populateTable.executeQuery("Select * from movie where isPublished = 1");
-                    }
-
-                    // Add to the list
-                    while (populateResult.next()) {
-                        Movie newMovie = new Movie();
-                        newMovie.setTitle(populateResult.getString("title"));
-                        newMovie.setGenre(populateResult.getString("genre"));
-                        newMovie.setStudio(populateResult.getString("studio"));
-                        newMovie.setYear(populateResult.getInt("yr"));
-                        newMovie.setDirector(populateResult.getString("director"));
-                        newMovie.setId(populateResult.getInt("movie_id"));
-                        newMovie.setIsPublished(populateResult.getInt("isPublished") == 1);
-
-                        // add to list
-                        movieData.add(newMovie);
-                    }
+                    populateMovieTable(0);
 
                 } catch (SQLException | ClassNotFoundException e) {
                     e.printStackTrace();
                     System.out.println("RIP DB CONNECTION");
                 }
-            } else {
-                // user is not authorised
-                isAdmin = false;
             }
 
 

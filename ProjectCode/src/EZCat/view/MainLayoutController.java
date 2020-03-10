@@ -17,7 +17,7 @@ public class MainLayoutController {
     private Main mainApp;
 
     @FXML
-    private TableView<Movie> movieTable;
+    public TableView<Movie> movieTable;
     @FXML
     private TableColumn<Movie, String> titleColumn;
     @FXML

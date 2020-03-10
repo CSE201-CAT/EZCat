@@ -32,11 +32,6 @@ public class LoginLayoutController {
         person.setUsername(usernameField.getText());
         person.setPassword(passwordField.getText());
         if (isInputValid(true)) {
-            System.out.println(usernameField.getText());
-            System.out.println(passwordField.getText());
-            System.out.println(person.getPassword());
-
-            System.out.println(person.toString());
 
             try {
                 DatabaseConnector dbCon = new DatabaseConnector("general", "generalPublicPassword");
@@ -61,14 +56,6 @@ public class LoginLayoutController {
         person.setUsername(usernameField.getText());
         person.setPassword(passwordField.getText());
         if (isInputValid(false)) {
-            person.setUsername(usernameField.getText());
-            person.setPassword(passwordField.getText());
-            System.out.println(usernameField.getText());
-            System.out.println(passwordField.getText());
-            System.out.println(person.getPassword());
-            System.out.println();
-
-            System.out.println(person.toString());
 
             try {
                 DatabaseConnector dbCon = new DatabaseConnector("general", "generalPublicPassword");
@@ -80,9 +67,14 @@ public class LoginLayoutController {
                     okClicked = false;
                     System.out.println("invalid");
                 }
+                if(isAuthorised(person.getUsername(), dbCon)) {
+                    person.setIsAdmin(true);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
+
 
             dialogStage.close();
         }

@@ -25,19 +25,7 @@ public class DatabaseConnector {
         ObservableList<Movie> movieDataList = FXCollections.observableArrayList();
 
         // Add to the list
-        while (testR.next()) {
-            Movie newMovie = new Movie();
-            newMovie.setTitle(testR.getString("title"));
-            newMovie.setGenre(testR.getString("genre"));
-            newMovie.setStudio(testR.getString("studio"));
-            newMovie.setYear(testR.getInt("yr"));
-            newMovie.setDirector(testR.getString("director"));
-            newMovie.setId(testR.getInt("movie_id"));
-            newMovie.setIsPublished(testR.getInt("isPublished") == 1);
-
-            // add to list
-            movieDataList.add(newMovie);
-        }
+        Main.movieTablePopulationLoop(testR, movieDataList);
 
         return movieDataList;
     }
@@ -63,7 +51,6 @@ public class DatabaseConnector {
     public void deleteMovie(Movie mv) throws SQLException {
         // setup delete statement
         String query = " DELETE FROM movie where movie_id = ?";
-        System.out.println(mv.getId());
         PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
         preparedStatement.setInt(1, mv.getId());
 
