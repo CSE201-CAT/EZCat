@@ -245,7 +245,7 @@ public class Main extends Application {
 
 
         userPerson = displayLogin();
-        if (userPerson == null) {
+        if (userPerson.getUsername() == null) {
             // did not log in but got around login box
             System.exit(0);
         }
@@ -303,7 +303,6 @@ public class Main extends Application {
                     System.out.println("RIP DB CONNECTION");
                 }
             }
-
 
             return controller.isOkClicked();
         } catch (Exception ex) {

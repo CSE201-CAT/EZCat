@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class LoginLayoutController {
     private Stage dialogStage;
-    private Person person;
+    public Person person;
     private boolean okClicked = false;
 
     @FXML
