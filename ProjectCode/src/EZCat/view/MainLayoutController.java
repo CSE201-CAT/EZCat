@@ -33,6 +33,8 @@ public class MainLayoutController {
     private Label studioLabel;
     @FXML
     public Button acceptRequestButton;
+    @FXML
+    private TextField searchBarField;
 
 
     /**
@@ -194,7 +196,6 @@ public class MainLayoutController {
 
     @FXML
     private void handleAcceptRequest() {
-        System.out.println("at request");
         Movie selectedMovie = movieTable.getSelectionModel().getSelectedItem();
         int selectedIndex = movieTable.getSelectionModel().getSelectedIndex();
 
@@ -203,8 +204,6 @@ public class MainLayoutController {
             if (!selectedMovie.getPublished() && selectedMovie.getOldMovieID() == -1) {
                 // movie is not published and there is no old movie index
                 // -- means new movie request
-
-                System.out.println("in new request");
 
                 selectedMovie.setIsPublished(true);  // set to be a published movie
                 try {
@@ -216,8 +215,6 @@ public class MainLayoutController {
             } else if (!selectedMovie.getPublished() && selectedMovie.getOldMovieID() != -1) {
                 // movie is not published and there is an old movie index
                 // -- means edit movie request
-
-                System.out.println("in edit request");
 
                 try {
                     mainApp.dbCon.deleteMovie(selectedMovie.getOldMovieID());  // remove current published entry
@@ -231,8 +228,6 @@ public class MainLayoutController {
                 // movie is already published and delete desire is flagged
                 // -- means that movie deletion is desired
 
-                System.out.println("in del request");
-
                 try {
                     mainApp.dbCon.deleteMovie(selectedMovie);  // remove current movie
                     movieTable.getItems().remove(selectedIndex); // remove from request list
@@ -245,6 +240,35 @@ public class MainLayoutController {
             notifyUser("No Selection", "No Movie Request Selected", "Please select a movie in the table");
         }
     }
+
+
+    @FXML
+    private void handleSearchRequest() {
+        String request = "";
+
+        // grab text from search bar
+        request = searchBarField.getText();
+
+        // submit query search
+        try {
+            if (mainApp.rootLayoutControllerInMain.newEditClicked) {
+                // filter only new / edit movie requests
+                System.out.println("filter new edit");
+                mainApp.filterMovieTable(request, 1);
+            } else if (mainApp.rootLayoutControllerInMain.deleteClicked) {
+                // filter only delete movie requests
+                System.out.println("Filter delete");
+                mainApp.filterMovieTable(request, 2);
+            } else {
+                // filter general movies only
+                System.out.println("filter general");
+                mainApp.filterMovieTable(request, 0);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
 
     /**
      * Initializes the controller class. This method is automatically called

@@ -16,8 +16,8 @@ public class RootLayoutController {
     @FXML
     public Button deleteViewButton;
 
-    private boolean newEditClicked = false;
-    private boolean deleteClicked = false;
+    public boolean newEditClicked = false;
+    public boolean deleteClicked = false;
 
     @FXML
     private void handleViewProfileButton() {

@@ -21,8 +21,8 @@ public class Main extends Application {
     public DatabaseConnector dbCon;
     public boolean isAdmin = false;
     public Person userPerson;
-    private RootLayoutController rootLayoutController;
-    private MainLayoutController mainLayoutController;
+    public RootLayoutController rootLayoutControllerInMain;
+    public MainLayoutController mainLayoutControllerInMain;
 
     /**
      * The data as an observable list of Movies.
@@ -55,8 +55,8 @@ public class Main extends Application {
             primaryStage.setScene(scene);
 
             // Give the controller access to the main app.
-            rootLayoutController = loader.getController();
-            rootLayoutController.setMainApp(this);
+            rootLayoutControllerInMain = loader.getController();
+            rootLayoutControllerInMain.setMainApp(this);
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -78,9 +78,9 @@ public class Main extends Application {
             rootLayout.setCenter(movieOverview);
 
             // Give the controller access to the main app.
-            mainLayoutController = loader.getController();
+            mainLayoutControllerInMain = loader.getController();
 
-            mainLayoutController.setMainApp(this);
+            mainLayoutControllerInMain.setMainApp(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -193,6 +193,59 @@ public class Main extends Application {
         }
     }
 
+
+    /**
+     * Filter the movie table with movies that meet the criteria
+     * @param filter What to filter by. Will filter by genre, studio, director
+     * @param adminListType Which type of table to filter: 0 = published, 1 = new / edit requests, 2 = delete requests
+     * @throws SQLException
+     */
+    public void filterMovieTable(String filter, int adminListType) throws SQLException {
+        if (userPerson != null) {
+            isAdmin = userPerson.getAdmin();
+        }
+        movieData.clear();
+
+        PreparedStatement preparedStatement = null;
+
+        if (isAdmin && adminListType == 1) {
+            // filter new / edit requests
+            String query = "SELECT * FROM movie WHERE (director LIKE ?" +
+                    "OR genre LIKE ?" +
+                    "OR studio LIKE ? ) AND isPublished = 0 and deleteRequest = 0;";
+            preparedStatement = dbCon.databaseConnection.prepareStatement(query);
+            preparedStatement.setString(1, "%" + filter + "%");
+            preparedStatement.setString(2, "%" + filter + "%");
+            preparedStatement.setString(3, "%" + filter + "%");
+        } else if (isAdmin && adminListType == 2) {
+            // filter delete requests
+            String query = "SELECT * FROM movie WHERE (director LIKE ?" +
+                    "OR genre LIKE ?" +
+                    "OR studio LIKE ? ) AND deleteRequest = 1;";
+            preparedStatement = dbCon.databaseConnection.prepareStatement(query);
+            preparedStatement.setString(1, "%" + filter + "%");
+            preparedStatement.setString(2, "%" + filter + "%");
+            preparedStatement.setString(3, "%" + filter + "%");
+        } else {
+            // filter general movie table
+            String query = "SELECT * FROM movie WHERE (director LIKE ?" +
+                    "OR genre LIKE ?" +
+                    "OR studio LIKE ? ) AND isPublished = 1;";
+            preparedStatement = dbCon.databaseConnection.prepareStatement(query);
+            preparedStatement.setString(1, "%" + filter + "%");
+            preparedStatement.setString(2, "%" + filter + "%");
+            preparedStatement.setString(3, "%" + filter + "%");
+        }
+
+        // execute prepared statement
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        // Add to the list
+        movieTablePopulationLoop(resultSet, movieData);
+    }
+
+
+
     /**
      * Populate the movie table with movies
      * @param adminListType 0 = published, 1 = new / edit requests, 2 = delete requests
@@ -284,9 +337,9 @@ public class Main extends Application {
             if (controller.isAuthorised("", dbCon)) {
                 // user is authorised
                 isAdmin = true;
-                rootLayoutController.deleteViewButton.setDisable(false);
-                rootLayoutController.newEditViewButton.setDisable(false);
-                mainLayoutController.acceptRequestButton.setDisable(false);
+                rootLayoutControllerInMain.deleteViewButton.setDisable(false);
+                rootLayoutControllerInMain.newEditViewButton.setDisable(false);
+                mainLayoutControllerInMain.acceptRequestButton.setDisable(false);
                 try {
                     movieData.clear();
                     Class.forName("com.mysql.jdbc.Driver");
