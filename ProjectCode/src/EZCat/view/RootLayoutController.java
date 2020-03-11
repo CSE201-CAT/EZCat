@@ -39,7 +39,7 @@ public class RootLayoutController {
                 mainApp.populateMovieTable(1);
                 newEditClicked = true;
                 newEditViewButton.setText("View Published");
-//                deleteViewButton.setText("Delete Requests");
+                deleteViewButton.setText("Delete Requests");
                 mainApp.mainLayoutControllerInMain.bookmarkButton.setText("Deny Request");
             } else {
                 // triggered - revert
@@ -65,7 +65,7 @@ public class RootLayoutController {
                 mainApp.populateMovieTable(2);
                 deleteClicked = true;
                 deleteViewButton.setText("View Published");
-//                newEditViewButton.setText("New / Edit Requests");
+                newEditViewButton.setText("New / Edit Requests");
 
                 mainApp.mainLayoutControllerInMain.bookmarkButton.setText("Deny Request");
             } else {
