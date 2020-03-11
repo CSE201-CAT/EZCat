@@ -199,6 +199,7 @@ public class MainLayoutController {
     @FXML
     private void handleAcceptRequest() {
         Movie selectedMovie = movieTable.getSelectionModel().getSelectedItem();
+        selectedMovie.setToDelete(movieTable.getSelectionModel().getSelectedItem().getToDelete());
         int selectedIndex = movieTable.getSelectionModel().getSelectedIndex();
 
         if (selectedMovie != null) {
@@ -226,10 +227,10 @@ public class MainLayoutController {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-            } else if (selectedMovie.getPublished() && selectedMovie.getToDelete()) {
+            } else if (mainApp.rootLayoutControllerInMain.deleteClicked) {
                 // movie is already published and delete desire is flagged
                 // -- means that movie deletion is desired
-
+                System.out.println("to delete: " + selectedMovie);
                 try {
                     mainApp.dbCon.deleteMovie(selectedMovie);  // remove current movie
                     movieTable.getItems().remove(selectedIndex); // remove from request list
@@ -290,7 +291,7 @@ public class MainLayoutController {
                     Movie selectedMovie = movieTable.getItems().get(selectedIndex);
                     selectedMovie.setToDelete(false);
                     mainApp.dbCon.updateMovie(selectedMovie);
-                    movieTable.getItems().set(selectedIndex, selectedMovie);
+                    movieTable.getItems().remove(selectedIndex);
                 } else {
                     // Nothing selected.
                     notifyUser("No Selection", "No Movie Request Selected", "Please select a movie in the table");
