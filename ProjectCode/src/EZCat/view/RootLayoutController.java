@@ -40,12 +40,15 @@ public class RootLayoutController {
                 newEditClicked = true;
                 newEditViewButton.setText("View Published");
 //                deleteViewButton.setText("Delete Requests");
+                mainApp.mainLayoutControllerInMain.bookmarkButton.setText("Deny Request");
             } else {
                 // triggered - revert
                 mainApp.populateMovieTable(0);
                 newEditClicked = false;
                 deleteClicked = false;
                 newEditViewButton.setText("New / Edit Requests");
+
+                mainApp.mainLayoutControllerInMain.bookmarkButton.setText("Bookmark");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -63,12 +66,16 @@ public class RootLayoutController {
                 deleteClicked = true;
                 deleteViewButton.setText("View Published");
 //                newEditViewButton.setText("New / Edit Requests");
+
+                mainApp.mainLayoutControllerInMain.bookmarkButton.setText("Deny Request");
             } else {
                 // triggered - revert
                 mainApp.populateMovieTable(0);
                 deleteClicked = false;
                 newEditClicked = false;
                 deleteViewButton.setText("Delete Requests");
+
+                mainApp.mainLayoutControllerInMain.bookmarkButton.setText("Bookmark");
             }
         } catch (SQLException e) {
             e.printStackTrace();

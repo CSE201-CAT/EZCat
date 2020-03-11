@@ -35,6 +35,8 @@ public class MainLayoutController {
     public Button acceptRequestButton;
     @FXML
     private TextField searchBarField;
+    @FXML
+    public Button bookmarkButton;
 
 
     /**
@@ -253,16 +255,50 @@ public class MainLayoutController {
         try {
             if (mainApp.rootLayoutControllerInMain.newEditClicked) {
                 // filter only new / edit movie requests
-                System.out.println("filter new edit");
                 mainApp.filterMovieTable(request, 1);
             } else if (mainApp.rootLayoutControllerInMain.deleteClicked) {
                 // filter only delete movie requests
-                System.out.println("Filter delete");
                 mainApp.filterMovieTable(request, 2);
             } else {
                 // filter general movies only
-                System.out.println("filter general");
                 mainApp.filterMovieTable(request, 0);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    private void handleBookmarkButton() {
+        // submit query search
+        try {
+            if (mainApp.rootLayoutControllerInMain.newEditClicked) {
+                // simply delete new / edit movie
+                int selectedIndex = movieTable.getSelectionModel().getSelectedIndex();
+                if (selectedIndex >= 0) {
+                    mainApp.dbCon.deleteMovie(movieTable.getItems().get(selectedIndex));
+                    movieTable.getItems().remove(selectedIndex);
+                } else {
+                    // Nothing selected.
+                    notifyUser("No Selection", "No Movie Request Selected", "Please select a movie in the table");
+                }
+            } else if (mainApp.rootLayoutControllerInMain.deleteClicked) {
+                // remove delete request from movie
+                int selectedIndex = movieTable.getSelectionModel().getSelectedIndex();
+                if (selectedIndex >= 0) {
+                    Movie selectedMovie = movieTable.getItems().get(selectedIndex);
+                    selectedMovie.setToDelete(false);
+                    mainApp.dbCon.updateMovie(selectedMovie);
+                    movieTable.getItems().set(selectedIndex, selectedMovie);
+                } else {
+                    // Nothing selected.
+                    notifyUser("No Selection", "No Movie Request Selected", "Please select a movie in the table");
+                }
+            } else {
+                // bookmark
+                System.out.println("bookmark functionality goes here");
+                // TODO fulfill bookmark functionality
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
