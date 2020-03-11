@@ -13,6 +13,8 @@ public class Movie {
     private final StringProperty studio;
     private final IntegerProperty id;
     private final BooleanProperty isPublished;
+    private final BooleanProperty toDelete;
+    private final IntegerProperty oldMovieID;
 
     /**
      * Full Constructor
@@ -24,13 +26,14 @@ public class Movie {
         this.title = new SimpleStringProperty(title);
         this.genre = new SimpleStringProperty(genre);
 
-        // Some dummy data, for testing.
-        this.director = new SimpleStringProperty("some guy");
+        this.director = new SimpleStringProperty("");
         this.rating = new SimpleDoubleProperty(5.0);
         this.year = new SimpleIntegerProperty(1234);
         this.studio = new SimpleStringProperty("a studio");
         this.id = new SimpleIntegerProperty(-1);
         this.isPublished = new SimpleBooleanProperty(false);
+        this.toDelete = new SimpleBooleanProperty(false);
+        this.oldMovieID = new SimpleIntegerProperty(-1);
     }
 
     /**
@@ -50,6 +53,9 @@ public class Movie {
                 ", director=" + director +
                 ", rating=" + rating +
                 ", studio=" + studio +
+                ", id=" + id +
+                ", isPublished=" + isPublished +
+                ", toDelete=" + toDelete +
                 '}';
     }
 
@@ -147,5 +153,29 @@ public class Movie {
 
     public BooleanProperty isPublishedProperty() {
         return isPublished;
+    }
+
+    public boolean getToDelete() {
+        return toDelete.get();
+    }
+
+    public void setToDelete(boolean flag) {
+        this.toDelete.set(flag);
+    }
+
+    public BooleanProperty toDeleteProperty() {
+        return toDelete;
+    }
+
+    public int getOldMovieID() {
+        return oldMovieID.get();
+    }
+
+    public void setOldMovieID(int oldMovieID) {
+        this.oldMovieID.set(oldMovieID);
+    }
+
+    public IntegerProperty oldMovieIDProperty() {
+        return oldMovieID;
     }
 }

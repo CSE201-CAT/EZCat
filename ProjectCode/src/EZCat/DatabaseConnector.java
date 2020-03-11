@@ -32,8 +32,8 @@ public class DatabaseConnector {
 
     public void addMovie(Movie mv) throws SQLException {
         // setup insert statement
-        String query = " INSERT INTO movie (title, genre, studio, yr, director, isPublished) " +
-                "VALUES (?, ?, ?, ?, ?, ?);";
+        String query = " INSERT INTO movie (title, genre, studio, yr, director, isPublished, deleteRequest, editMovieID) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 
         // create prepared statement
         PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
@@ -43,6 +43,8 @@ public class DatabaseConnector {
         preparedStatement.setInt(4, mv.getYear());
         preparedStatement.setString(5, mv.getDirector());
         preparedStatement.setInt(6, mv.getPublished() ? 1 : 0);
+        preparedStatement.setInt(7, mv.getToDelete() ? 1 : 0);
+        preparedStatement.setInt(8, mv.getOldMovieID());
 
         // execute prepared statement
         preparedStatement.execute();
@@ -58,17 +60,29 @@ public class DatabaseConnector {
         preparedStatement.execute();
     }
 
+    public void deleteMovie(int id) throws SQLException {
+        // setup delete statement
+        String query = " DELETE FROM movie where movie_id = ?";
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setInt(1, id);
+
+        // execute prepared statement
+        preparedStatement.execute();
+    }
+
     public void updateMovie(Movie mv) throws SQLException {
         // setup update statement
-        String query = "update movie set title = ?, genre = ?, studio = ?, yr = ?, director = ?, isPublished = ? where movie_id = ?";
+        String query = "update movie set title = ?, genre = ?, studio = ?, yr = ?, director = ?, isPublished = ?, deleteRequest = ?, editMovieID = ? where movie_id = ?";
         PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
         preparedStatement.setString(1, mv.getTitle());
         preparedStatement.setString(2, mv.getGenre());
         preparedStatement.setString(3, mv.getStudio());
         preparedStatement.setInt(4, mv.getYear());
         preparedStatement.setString(5, mv.getDirector());
-        preparedStatement.setInt(6, mv.getId());
-        preparedStatement.setInt(7, mv.getPublished() ? 1 : 0);
+        preparedStatement.setInt(6, mv.getPublished() ? 1 : 0);
+        preparedStatement.setInt(7, mv.getToDelete() ? 1 : 0);
+        preparedStatement.setInt(8, mv.getOldMovieID());
+        preparedStatement.setInt(9, mv.getId());
 
         // execute prepared statement
         preparedStatement.execute();

@@ -80,6 +80,7 @@
                               <Button mnemonicParsing="false" onAction="#handleViewCommentsPage" text="Comments Page" GridPane.rowIndex="6" />
                               <Label text="Studio" GridPane.rowIndex="5" />
                               <Label fx:id="studioLabel" prefHeight="17.0" prefWidth="140.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <Button fx:id="acceptRequestButton" disable="true" mnemonicParsing="false" onAction="#handleAcceptRequest" text="Accept Request" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                     </children>
                   </GridPane>
                   <ButtonBar layoutX="54.0" layoutY="250.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0">

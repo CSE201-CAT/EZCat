@@ -22,6 +22,7 @@ public class Main extends Application {
     public boolean isAdmin = false;
     public Person userPerson;
     private RootLayoutController rootLayoutController;
+    private MainLayoutController mainLayoutController;
 
     /**
      * The data as an observable list of Movies.
@@ -77,8 +78,9 @@ public class Main extends Application {
             rootLayout.setCenter(movieOverview);
 
             // Give the controller access to the main app.
-            MainLayoutController controller = loader.getController();
-            controller.setMainApp(this);
+            mainLayoutController = loader.getController();
+
+            mainLayoutController.setMainApp(this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -284,6 +286,7 @@ public class Main extends Application {
                 isAdmin = true;
                 rootLayoutController.deleteViewButton.setDisable(false);
                 rootLayoutController.newEditViewButton.setDisable(false);
+                mainLayoutController.acceptRequestButton.setDisable(false);
                 try {
                     movieData.clear();
                     Class.forName("com.mysql.jdbc.Driver");

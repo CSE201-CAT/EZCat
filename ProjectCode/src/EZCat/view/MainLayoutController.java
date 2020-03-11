@@ -3,10 +3,7 @@ package EZCat.view;
 import EZCat.Main;
 import EZCat.Movie;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -34,6 +31,8 @@ public class MainLayoutController {
     private Label ratingLabel;
     @FXML
     private Label studioLabel;
+    @FXML
+    public Button acceptRequestButton;
 
 
     /**
@@ -62,6 +61,16 @@ public class MainLayoutController {
         }
     }
 
+    private void notifyUser(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.initOwner(mainApp.getPrimaryStage());
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        alert.showAndWait();
+    }
+
 
     /**
      * Called when the user clicks on the delete button.
@@ -71,11 +80,20 @@ public class MainLayoutController {
         int selectedIndex = movieTable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
             try {
-                mainApp.dbCon.deleteMovie(movieTable.getItems().get(selectedIndex));
+                if (mainApp.isAdmin) {
+                    // admin can just remove
+                    mainApp.dbCon.deleteMovie(movieTable.getItems().get(selectedIndex));
+                    movieTable.getItems().remove(selectedIndex);
+                } else {
+                    // not admin - request to remove
+                    Movie tmpM = movieTable.getItems().get(selectedIndex);
+                    tmpM.setToDelete(true);
+                    mainApp.dbCon.updateMovie(tmpM);
+                    notifyUser("Request Submitted", "Delete Request Sent To Admins", "");
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            movieTable.getItems().remove(selectedIndex);
         } else {
             // Nothing selected.
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -97,14 +115,15 @@ public class MainLayoutController {
         Movie tmpMovie = new Movie();
         boolean okClicked = mainApp.showMovieEditDialog(tmpMovie);
         if (okClicked) {
-            mainApp.getMovieData().add(tmpMovie);
             try {
                 if (mainApp.isAdmin) {
                     // user is admin - autopublish movie
                     tmpMovie.setIsPublished(true);
+                    mainApp.getMovieData().add(tmpMovie);
+                } else {
+                    notifyUser("Request Submitted", "Add Request Sent To Admins", "");
                 }
                 mainApp.dbCon.addMovie(tmpMovie);
-
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -122,12 +141,20 @@ public class MainLayoutController {
             boolean okClicked = mainApp.showMovieEditDialog(selectedMovie);
             if (okClicked) {
                 showMovieDetails(selectedMovie);
+                System.out.println("Edited: " + selectedMovie);
                 try {
                     if (mainApp.isAdmin) {
                         // user is admin - autopublish movie
                         selectedMovie.setIsPublished(true);
+                        mainApp.dbCon.updateMovie(selectedMovie);
+                    } else {
+                        selectedMovie.setOldMovieID(selectedMovie.getId());  // this is what will be deleted if approved
+                        selectedMovie.setId(-1);  // reset actual movie id so it is unique
+                        selectedMovie.setIsPublished(false);  // this one is not approved so not published
+                        mainApp.dbCon.addMovie(selectedMovie);
+                        notifyUser("Request Submitted", "Edit Request Sent To Admins", "");
+                        System.out.println("Sent: " + selectedMovie);
                     }
-                    mainApp.dbCon.updateMovie(selectedMovie);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -162,6 +189,60 @@ public class MainLayoutController {
             alert.setContentText("Please select a movie in the table.");
 
             alert.showAndWait();
+        }
+    }
+
+    @FXML
+    private void handleAcceptRequest() {
+        System.out.println("at request");
+        Movie selectedMovie = movieTable.getSelectionModel().getSelectedItem();
+        int selectedIndex = movieTable.getSelectionModel().getSelectedIndex();
+
+        if (selectedMovie != null) {
+            // must determine what request action to take
+            if (!selectedMovie.getPublished() && selectedMovie.getOldMovieID() == -1) {
+                // movie is not published and there is no old movie index
+                // -- means new movie request
+
+                System.out.println("in new request");
+
+                selectedMovie.setIsPublished(true);  // set to be a published movie
+                try {
+                    mainApp.dbCon.updateMovie(selectedMovie);  // update to be published
+                    movieTable.getItems().remove(selectedIndex);  // remove from request list
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } else if (!selectedMovie.getPublished() && selectedMovie.getOldMovieID() != -1) {
+                // movie is not published and there is an old movie index
+                // -- means edit movie request
+
+                System.out.println("in edit request");
+
+                try {
+                    mainApp.dbCon.deleteMovie(selectedMovie.getOldMovieID());  // remove current published entry
+                    selectedMovie.setIsPublished(true);  // set new version to be published
+                    selectedMovie.setOldMovieID(-1);  // remove oldMovieID
+                    movieTable.getItems().remove(selectedIndex); // remove from request list
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } else if (selectedMovie.getPublished() && selectedMovie.getToDelete()) {
+                // movie is already published and delete desire is flagged
+                // -- means that movie deletion is desired
+
+                System.out.println("in del request");
+
+                try {
+                    mainApp.dbCon.deleteMovie(selectedMovie);  // remove current movie
+                    movieTable.getItems().remove(selectedIndex); // remove from request list
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            // Nothing selected.
+            notifyUser("No Selection", "No Movie Request Selected", "Please select a movie in the table");
         }
     }
 
