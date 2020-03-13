@@ -63,6 +63,7 @@ public class LoginLayoutController {
                     // true if user with password found in DB
                     System.out.println("Logged in");
                     okClicked = true;
+                    person.setId(dbCon.getUserID(person.getUsername()));
                 } else {
                     okClicked = false;
                     System.out.println("invalid");

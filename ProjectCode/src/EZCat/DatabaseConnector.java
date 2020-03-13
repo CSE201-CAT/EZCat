@@ -158,4 +158,52 @@ public class DatabaseConnector {
         // user account made / now logged in
         return true;
     }
+
+    public int getUserID(String username) throws SQLException {
+        String query = "SELECT person_id FROM people WHERE username = ?";
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setString(1, username);
+
+        // execute prepared statement
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        // Add to the list
+        while (resultSet.next()) {
+            // add to list
+            return resultSet.getInt("person_id");
+        }
+
+        // nothing found
+        return -1;
+    }
+
+    public void addBookmark(Movie selectedMovie, Person person) throws SQLException {
+        // setup insert statement
+        String query2 = "INSERT INTO bookmarks " +
+                "(person_id, movie_id) " +
+                "VALUES (?, ?);";
+
+        // create prepared statement
+        PreparedStatement preparedStatement2 = databaseConnection.prepareStatement(query2);
+        preparedStatement2.setInt(2, selectedMovie.getId());
+        preparedStatement2.setInt(1, person.getId());
+
+        // execute prepared statement
+        preparedStatement2.execute();
+    }
+
+    public void removeBookmark(Movie selectedMovie, Person person) throws SQLException {
+        // setup insert statement
+        String query2 = "DELETE FROM bookmarks " +
+                "WHERE person_id = ? AND " +
+                "movie_id = ?;";
+
+        // create prepared statement
+        PreparedStatement preparedStatement2 = databaseConnection.prepareStatement(query2);
+        preparedStatement2.setInt(2, selectedMovie.getId());
+        preparedStatement2.setInt(1, person.getId());
+
+        // execute prepared statement
+        preparedStatement2.execute();
+    }
 }

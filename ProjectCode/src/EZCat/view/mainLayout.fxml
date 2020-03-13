@@ -37,7 +37,7 @@
                           <items>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
-                                    <TextField fx:id="searchBarField" prefHeight="34.0" prefWidth="159.0" promptText="search genre or director" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                    <TextField fx:id="searchBarField" prefHeight="34.0" prefWidth="159.0" promptText="filter by genre / director / studio" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                  </children>
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -86,9 +86,9 @@
                   <ButtonBar layoutX="54.0" layoutY="250.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                     <buttons>
                               <Button fx:id="bookmarkButton" mnemonicParsing="false" onAction="#handleBookmarkButton" text="Bookmark" />
-                      <Button mnemonicParsing="false" onAction="#handleNewMovie" text="New..." />
-                      <Button mnemonicParsing="false" onAction="#handleEditMovie" text="Edit..." />
-                      <Button mnemonicParsing="false" onAction="#handleDeleteMovie" text="Delete" />
+                      <Button fx:id="newButton" mnemonicParsing="false" onAction="#handleNewMovie" text="New..." />
+                      <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEditMovie" text="Edit..." />
+                      <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteMovie" text="Delete" />
                     </buttons>
                   </ButtonBar>
                 </children>

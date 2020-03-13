@@ -37,6 +37,11 @@ public class MainLayoutController {
     private TextField searchBarField;
     @FXML
     public Button bookmarkButton;
+    @FXML
+    public Button newButton;
+    @FXML
+    public Button editButton;
+
 
 
     /**
@@ -84,7 +89,11 @@ public class MainLayoutController {
         int selectedIndex = movieTable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
             try {
-                if (mainApp.isAdmin) {
+                if (mainApp.rootLayoutControllerInMain.bookmarkClicked) {
+                    // removing a bookmark
+                    mainApp.dbCon.removeBookmark(movieTable.getItems().get(selectedIndex), mainApp.userPerson);
+                    movieTable.getItems().remove(selectedIndex);
+                } else if (mainApp.isAdmin) {
                     // admin can just remove
                     mainApp.dbCon.deleteMovie(movieTable.getItems().get(selectedIndex));
                     movieTable.getItems().remove(selectedIndex);
@@ -299,7 +308,14 @@ public class MainLayoutController {
             } else {
                 // bookmark
                 System.out.println("bookmark functionality goes here");
-                // TODO fulfill bookmark functionality
+                int selectedIndex = movieTable.getSelectionModel().getSelectedIndex();
+                if (selectedIndex >= 0) {
+                    Movie selectedMovie = movieTable.getItems().get(selectedIndex);
+                    mainApp.dbCon.addBookmark(selectedMovie, mainApp.userPerson);
+                } else {
+                    // Nothing selected.
+                    notifyUser("No Selection", "No Movie Selected", "Please select a movie in the table");
+                }
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

@@ -248,22 +248,37 @@ public class Main extends Application {
 
     /**
      * Populate the movie table with movies
-     * @param adminListType 0 = published, 1 = new / edit requests, 2 = delete requests
+     * @param listType 0 = published, 1 = new / edit requests, 2 = delete requests, 3 = bookmarked (for that user)
      * @throws SQLException
      */
-    public void populateMovieTable(int adminListType) throws SQLException {
+    public void populateMovieTable(int listType) throws SQLException {
         if (userPerson != null) {
             isAdmin = userPerson.getAdmin();
         }
         movieData.clear();
         Statement populateTable = dbCon.databaseConnection.createStatement();
         ResultSet populateResult;
-        if (isAdmin && adminListType == 1) {
+        if (listType == 0) {
+            // published
+            populateResult = populateTable.executeQuery("Select * from movie where isPublished = 1");
+        } else if (isAdmin && listType == 1) {
+            // new / edit requests
             populateResult = populateTable.executeQuery("Select * from movie where isPublished = 0 and deleteRequest = 0");
-        } else if (isAdmin && adminListType == 2) {
+        } else if (isAdmin && listType == 2) {
+            // delete
             populateResult = populateTable.executeQuery("Select * from movie where deleteRequest = 1");
         } else {
-            populateResult = populateTable.executeQuery("Select * from movie where isPublished = 1");
+            // user's bookmarks
+            System.out.println("here: id = " + userPerson.getId());
+            String query = "SELECT * " +
+                    "FROM bookmarks b, movie m, people p " +
+                    "WHERE b.person_id = p.person_id AND " +
+                    "m.movie_id = b.movie_id AND " +
+                    "b.person_id = ?";
+            PreparedStatement preparedStatement = dbCon.databaseConnection.prepareStatement(query);
+            preparedStatement.setInt(1, userPerson.getId());
+
+            populateResult = preparedStatement.executeQuery();
         }
 
         // Add to the list
@@ -339,7 +354,6 @@ public class Main extends Application {
                 isAdmin = true;
                 rootLayoutControllerInMain.deleteViewButton.setDisable(false);
                 rootLayoutControllerInMain.newEditViewButton.setDisable(false);
-                mainLayoutControllerInMain.acceptRequestButton.setDisable(false);
                 try {
                     movieData.clear();
                     Class.forName("com.mysql.jdbc.Driver");
@@ -355,6 +369,9 @@ public class Main extends Application {
                     e.printStackTrace();
                     System.out.println("RIP DB CONNECTION");
                 }
+            } else {
+                rootLayoutControllerInMain.deleteViewButton.setVisible(false);
+                rootLayoutControllerInMain.newEditViewButton.setVisible(false);
             }
 
             return controller.isOkClicked();
