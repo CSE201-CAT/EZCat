@@ -27,7 +27,7 @@ public class Movie {
         this.genre = new SimpleStringProperty(genre);
 
         this.director = new SimpleStringProperty("");
-        this.rating = new SimpleDoubleProperty(5.0);
+        this.rating = new SimpleDoubleProperty(-1);
         this.year = new SimpleIntegerProperty(1234);
         this.studio = new SimpleStringProperty("a studio");
         this.id = new SimpleIntegerProperty(-1);
@@ -51,7 +51,7 @@ public class Movie {
                 ", genre=" + genre +
                 ", year=" + year +
                 ", director=" + director +
-                ", rating=" + rating +
+                ", rating=" + getRating() +
                 ", studio=" + studio +
                 ", id=" + id +
                 ", isPublished=" + isPublished +
@@ -96,6 +96,7 @@ public class Movie {
     }
 
     public double getRating() {
+        // TODO Will need to aggregate the ratings from the database after users have submitted their rating
         return rating.get();
     }
 

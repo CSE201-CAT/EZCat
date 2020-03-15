@@ -86,6 +86,7 @@ public class RootLayoutController {
                 newEditViewButton.setText("New / Edit Requests");
 
                 mainApp.mainLayoutControllerInMain.bookmarkButton.setText("Bookmark");
+                mainApp.mainLayoutControllerInMain.acceptRequestButton.setVisible(false);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -116,6 +117,7 @@ public class RootLayoutController {
                 deleteViewButton.setText("Delete Requests");
 
                 mainApp.mainLayoutControllerInMain.bookmarkButton.setText("Bookmark");
+                mainApp.mainLayoutControllerInMain.acceptRequestButton.setVisible(false);
             }
         } catch (SQLException e) {
             e.printStackTrace();

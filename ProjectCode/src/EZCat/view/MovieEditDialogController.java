@@ -19,8 +19,6 @@ public class MovieEditDialogController {
     @FXML
     private TextField directorField;
     @FXML
-    private TextField ratingField;
-    @FXML
     private TextField studioField;
 
 
@@ -57,7 +55,6 @@ public class MovieEditDialogController {
         titleField.setText(movie.getTitle());
         directorField.setText(movie.getDirector());
         genreField.setText(movie.getGenre());
-        ratingField.setText(Double.toString(movie.getRating()));
         yearField.setPromptText("yyyy");
         studioField.setText(movie.getStudio());
     }
@@ -80,7 +77,6 @@ public class MovieEditDialogController {
             movie.setTitle(titleField.getText());
             movie.setDirector(directorField.getText());
             movie.setGenre(genreField.getText());
-            movie.setRating(Double.parseDouble(ratingField.getText()));
             movie.setYear(Integer.parseInt(yearField.getText()));
             movie.setStudio(studioField.getText());
 
@@ -119,17 +115,6 @@ public class MovieEditDialogController {
         }
         if (directorField.getText() == null || directorField.getText().length() == 0) {
             errorMessage += "No director!\n";
-        }
-
-        if (ratingField.getText() == null || ratingField.getText().length() == 0) {
-            errorMessage += "No rating!\n";
-        } else {
-            // try to parse the rating to a Double
-            try {
-                Double.parseDouble(ratingField.getText());
-            } catch (NumberFormatException e) {
-                errorMessage += "No valid rating (must be an number)!\n";
-            }
         }
 
         if (yearField.getText() == null || yearField.getText().length() == 0) {
