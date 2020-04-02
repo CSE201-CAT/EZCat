@@ -206,7 +206,7 @@ public class DatabaseConnector {
         // execute prepared statement
         preparedStatement2.execute();
     }
-
+    
     public static void commentTablePopulationLoop(ResultSet populateResult, ObservableList<Comment> commentData) throws SQLException {
         while (populateResult.next()) {
             Comment newComment = new Comment();
@@ -218,7 +218,7 @@ public class DatabaseConnector {
             commentData.add(newComment);
         }
     }
-
+    
     public ObservableList<Comment> getCommentList() throws SQLException {
         // query the DB
         Statement testS = databaseConnection.createStatement();
@@ -232,7 +232,7 @@ public class DatabaseConnector {
 
         return commentDataList;
     }
-
+    
     public void addComment(Comment cm) throws SQLException {
         // setup insert statement
         String query = " INSERT INTO comments (personId,  movieId, comment) " +
@@ -257,7 +257,7 @@ public class DatabaseConnector {
         // execute prepared statement
         preparedStatement.execute();
     }
-
+    
     public void addRating(Rating r) throws SQLException {
         // setup insert statement
         String query = " INSERT INTO ratings (personId,  movieId, rating) " +
@@ -282,7 +282,7 @@ public class DatabaseConnector {
         // execute prepared statement
         preparedStatement.execute();
     }
-
+    
     public ObservableList<Rating> getRatingList() throws SQLException {
         // query the DB
         Statement testS = databaseConnection.createStatement();
@@ -296,7 +296,7 @@ public class DatabaseConnector {
 
         return ratingDataList;
     }
-
+    
     public static void ratingTablePopulationLoop(ResultSet populateResult, ObservableList<Rating> ratingData) throws SQLException {
         while (populateResult.next()) {
             Rating newRating = new Rating();
