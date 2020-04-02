@@ -11,8 +11,9 @@ public class Comment {
 
 	    /**
 	     * Full Constructor
-	     * @param title
-	     * @param genre
+	     * @param comment
+	     * @param personId
+		 * @param movieId
 	     */
 	    public Comment(String comment, int personId, int movieId) {
 	    	this.comment = new SimpleStringProperty(comment);
@@ -21,7 +22,7 @@ public class Comment {
 	    }
 
 	    public Comment() {
-	    	this(null, null, null);
+	    	this(null, -1, -1);
 		}
 
 		/**

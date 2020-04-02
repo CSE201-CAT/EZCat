@@ -14,8 +14,9 @@ public class Rating {
 
 	    /**
 	     * Full Constructor
-	     * @param title
-	     * @param genre
+	     * @param rating
+	     * @param personId
+		 * @param movieId
 	     */
 	    public Rating(double rating, int personId, int movieId) {
 	    	this.rating = new SimpleDoubleProperty(rating);
@@ -27,7 +28,7 @@ public class Rating {
 	     * Default constructor.
 	     */
 	    public Rating() {
-	        this(null, null, null);
+	        this(-1, -1, -1);
 	    }
 
 
