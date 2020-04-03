@@ -73,7 +73,7 @@ public class RootLayoutController {
                 newEditViewButton.setText("View Published");
                 deleteViewButton.setText("Delete Requests");
 
-                mainApp.mainLayoutControllerInMain.bookmarkButton.setText("Deny Request");
+                mainApp.mainLayoutControllerInMain.bookmarkButton.setText("Veto");
                 mainApp.mainLayoutControllerInMain.acceptRequestButton.setDisable(false);
                 mainApp.mainLayoutControllerInMain.editButton.setVisible(true);
                 mainApp.mainLayoutControllerInMain.newButton.setVisible(true);
@@ -105,7 +105,7 @@ public class RootLayoutController {
                 deleteViewButton.setText("View Published");
                 newEditViewButton.setText("New / Edit Requests");
                 mainApp.mainLayoutControllerInMain.acceptRequestButton.setDisable(false);
-                mainApp.mainLayoutControllerInMain.bookmarkButton.setText("Deny Request");
+                mainApp.mainLayoutControllerInMain.bookmarkButton.setText("Veto");
                 mainApp.mainLayoutControllerInMain.editButton.setVisible(true);
                 mainApp.mainLayoutControllerInMain.newButton.setVisible(true);
                 mainApp.mainLayoutControllerInMain.acceptRequestButton.setVisible(true);
