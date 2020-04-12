@@ -160,6 +160,45 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * Opens a dialog add a rating for the specified movie.
+     *
+     * @param movie the movie object to be viewed
+     * @param tmpRating
+     * @return true if the user clicked OK, false otherwise.
+     */
+    public boolean showMovieRatingDialog(Movie movie, Rating tmpRating) {
+        try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/ratingsLayout.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Movie Rating Page");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Set the movie into the controller.
+            RatingLayoutController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+            controller.setMovieRating(movie, tmpRating, userPerson);
+
+            // update movie rating
+            movie.setRating(dbCon.ratingCalculation(movie));
+
+            return controller.isOkClicked();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
 
 
 

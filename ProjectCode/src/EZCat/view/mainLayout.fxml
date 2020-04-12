@@ -54,8 +54,9 @@
                   <Label layoutX="104.0" layoutY="51.0" text="Movie Details" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="2.0" />
                   <GridPane layoutX="43.0" layoutY="104.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="12.0">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="146.0" minWidth="10.0" prefWidth="120.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="197.0" minWidth="10.0" prefWidth="182.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="146.0" minWidth="10.0" prefWidth="90.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="197.0" minWidth="10.0" prefWidth="137.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="197.0" minWidth="10.0" prefWidth="105.0" />
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -74,13 +75,14 @@
                       <Label text="Average Rating" GridPane.rowIndex="4" />
                       <Label fx:id="titleLabel" prefHeight="17.0" prefWidth="137.0" text="Label" GridPane.columnIndex="1" />
                       <Label fx:id="genreLabel" prefHeight="17.0" prefWidth="138.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                      <Label fx:id="yearLabel" prefHeight="17.0" prefWidth="136.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                      <Label fx:id="yearLabel" prefHeight="17.0" prefWidth="132.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                       <Label fx:id="directorLabel" prefHeight="17.0" prefWidth="138.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                       <Label fx:id="ratingLabel" prefHeight="17.0" prefWidth="140.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <Button mnemonicParsing="false" onAction="#handleViewCommentsPage" text="Comments Page" GridPane.rowIndex="6" />
+                              <Button mnemonicParsing="false" onAction="#handleViewCommentsPage" prefHeight="26.0" prefWidth="137.0" text="Comments" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                               <Label text="Studio" GridPane.rowIndex="5" />
                               <Label fx:id="studioLabel" prefHeight="17.0" prefWidth="140.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                              <Button fx:id="acceptRequestButton" disable="true" mnemonicParsing="false" onAction="#handleAcceptRequest" text="Accept Request" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Button fx:id="acceptRequestButton" disable="true" mnemonicParsing="false" onAction="#handleAcceptRequest" prefHeight="25.0" prefWidth="150.0" text="Accept Request" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                              <Button mnemonicParsing="false" onAction="#handleRateMovieButton" prefHeight="27.0" prefWidth="150.0" text="Rate Movie" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                     </children>
                   </GridPane>
                   <ButtonBar layoutX="54.0" layoutY="250.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">

@@ -235,7 +235,7 @@ public class DatabaseConnector {
     
     public void addComment(Comment cm) throws SQLException {
         // setup insert statement
-        String query = " INSERT INTO comments (personId,  movieId, comment) " +
+        String query = " INSERT INTO comments (person_id,  person_id, comment) " +
                 "VALUES (?, ?, ?);";
 
         // create prepared statement
@@ -260,14 +260,17 @@ public class DatabaseConnector {
     
     public void addRating(Rating r) throws SQLException {
         // setup insert statement
-        String query = " INSERT INTO ratings (personId,  movieId, rating) " +
-                "VALUES (?, ?, ?);";
+        String query = " INSERT INTO ratings (person_id,  movie_id, rating) " +
+                "VALUES (?, ?, ?)" +
+                " ON DUPLICATE KEY UPDATE" +
+                " rating = ?;";
 
         // create prepared statement
         PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
         preparedStatement.setInt(1, r.getPersonId());
         preparedStatement.setInt(2, r.getMovieId());
         preparedStatement.setDouble(3, r.getRating());
+        preparedStatement.setDouble(4, r.getRating());
 
         // execute prepared statement
         preparedStatement.execute();
@@ -296,6 +299,25 @@ public class DatabaseConnector {
 
         return ratingDataList;
     }
+
+    public double ratingCalculation(Movie movie) throws SQLException {
+        // query the DB
+        String query = "SELECT AVG(rating) as avgRating FROM ratings where movie_id = ?";
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setInt(1, movie.getId());
+
+        // execute prepared statement
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        // Add to the list
+        while (resultSet.next()) {
+            // add to list
+            return resultSet.getDouble("avgRating");
+        }
+
+        // nothing found
+        return -1;
+    }
     
     public static void ratingTablePopulationLoop(ResultSet populateResult, ObservableList<Rating> ratingData) throws SQLException {
         while (populateResult.next()) {
@@ -307,5 +329,23 @@ public class DatabaseConnector {
             // add to list
             ratingData.add(newRating);
         }
+    }
+
+    public boolean checkNoRatings(Movie movie) throws SQLException {
+        String query = "SELECT rating FROM ratings where movie_id = ?";
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setInt(1, movie.getId());
+
+        // execute prepared statement
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        // check if empty
+        if (!resultSet.next()) {
+            // no ratings
+            return true;
+        }
+
+        // found ratings
+        return false;
     }
 }

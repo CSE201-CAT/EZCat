@@ -2,6 +2,7 @@ package EZCat.view;
 
 import EZCat.Main;
 import EZCat.Movie;
+import EZCat.Rating;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -55,10 +56,32 @@ public class MainLayoutController {
             // Fill the labels with info from the movie object.
             titleLabel.setText(movie.getTitle());
             genreLabel.setText(movie.getGenre());
-            ratingLabel.setText(Double.toString(movie.getRating()));
             directorLabel.setText(movie.getDirector());
             yearLabel.setText(String.valueOf((movie.getYear())));
             studioLabel.setText(movie.getStudio());
+
+
+            try {
+                // get movie rating
+                movie.setRating(mainApp.dbCon.ratingCalculation(movie));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            if (movie.getRating() == 0.0) {
+                // ensure 0 rating is not from lack of ratings
+                try {
+                    if (mainApp.dbCon.checkNoRatings(movie)) {
+                        // still no ratings
+                        ratingLabel.setText("No Ratings");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // ratings have been placed
+                ratingLabel.setText(String.valueOf(movie.getRating()));
+            }
+
         } else {
             // Movie is null, remove all the text.
             titleLabel.setText("");
@@ -202,6 +225,29 @@ public class MainLayoutController {
             alert.setContentText("Please select a movie in the table.");
 
             alert.showAndWait();
+        }
+    }
+
+    @FXML
+    private void handleRateMovieButton() {
+        Movie selectedMovie = movieTable.getSelectionModel().getSelectedItem();
+        Rating tmpRating = new Rating();
+        if (selectedMovie != null) {
+            boolean okClicked = mainApp.showMovieRatingDialog(selectedMovie, tmpRating);
+            if (okClicked) {
+//                System.out.println(tmpRating);
+                // rating was accepted by verification system so add to database
+                try {
+                    mainApp.dbCon.addRating(tmpRating);
+                    double avgRating = mainApp.dbCon.ratingCalculation(selectedMovie);
+                    ratingLabel.setText(String.valueOf(avgRating));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            // Nothing selected.
+            notifyUser("No Selection", "No Movie Request Selected", "Please select a movie in the table");
         }
     }
 

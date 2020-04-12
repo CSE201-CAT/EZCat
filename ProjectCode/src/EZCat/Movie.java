@@ -96,7 +96,6 @@ public class Movie {
     }
 
     public double getRating() {
-        // TODO Will need to aggregate the ratings from the database after users have submitted their rating
         return rating.get();
     }
 
