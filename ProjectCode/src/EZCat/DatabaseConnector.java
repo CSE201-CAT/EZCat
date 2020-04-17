@@ -206,18 +206,7 @@ public class DatabaseConnector {
         // execute prepared statement
         preparedStatement2.execute();
     }
-    
-    public static void commentTablePopulationLoop(ResultSet populateResult, ObservableList<Comment> commentData) throws SQLException {
-        while (populateResult.next()) {
-            Comment newComment = new Comment();
-            newComment.setComment(populateResult.getString("comment"));
-            newComment.setPersonId(populateResult.getInt("personId"));
-            newComment.setMovieId(populateResult.getInt("movieId"));
 
-            // add to list
-            commentData.add(newComment);
-        }
-    }
     
     public ObservableList<Comment> getCommentList() throws SQLException {
         // query the DB
@@ -348,4 +337,42 @@ public class DatabaseConnector {
         // found ratings
         return false;
     }
+
+    /**
+     * Populate the comments table with movie comments
+     * @throws SQLException
+     * @return
+     */
+    public ResultSet populateCommentsTable(int movieID, ObservableList<Comment> commentData) throws SQLException {
+        commentData.clear();  // ensure empty
+        Statement populateTable = databaseConnection.createStatement();
+        ResultSet populateResult;
+        String query = "SELECT * " +
+             "FROM comments " +
+             "WHERE " +
+             "movie_id = ?";
+            PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+            preparedStatement.setInt(1, movieID);
+
+            populateResult = preparedStatement.executeQuery();
+
+        // Add to the list
+        return populateResult;
+    }
+
+    public static ObservableList<Comment> commentTablePopulationLoop(ResultSet populateResult,
+                                                  ObservableList<Comment> commentData) throws SQLException {
+        while (populateResult.next()) {
+            Comment newComment = new Comment();
+            newComment.setComment(populateResult.getString("comment"));
+            newComment.setMovieId(populateResult.getInt("movie_id"));
+            newComment.setPersonId(populateResult.getInt("person_id"));
+            System.out.println(newComment);
+            // add to list
+            commentData.add(newComment);
+        }
+
+        return commentData;
+    }
+
 }
