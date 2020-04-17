@@ -224,7 +224,7 @@ public class DatabaseConnector {
     
     public void addComment(Comment cm) throws SQLException {
         // setup insert statement
-        String query = " INSERT INTO comments (person_id,  person_id, comment) " +
+        String query = " INSERT INTO comments (person_id,  movie_id, comment) " +
                 "VALUES (?, ?, ?);";
 
         // create prepared statement

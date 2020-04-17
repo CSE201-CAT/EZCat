@@ -148,7 +148,7 @@ public class Main extends Application {
             // Set the movie into the controller.
             CommentsLayoutController controller = loader.getController();
             controller.setDialogStage(dialogStage);
-            controller.setMovieComments(movie);
+            controller.setMovieComments(movie, userPerson);
 
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
