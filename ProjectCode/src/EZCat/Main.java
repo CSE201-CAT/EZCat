@@ -30,6 +30,7 @@ public class Main extends Application {
     private ObservableList<Movie> movieData = FXCollections.observableArrayList();
 
 
+
     /**
      * Returns the data as an observable list of Movies.
      * @return
@@ -37,6 +38,8 @@ public class Main extends Application {
     public ObservableList<Movie> getMovieData() {
         return movieData;
     }
+
+
 
 
 
@@ -150,6 +153,35 @@ public class Main extends Application {
             controller.setDialogStage(dialogStage);
             controller.setMovieComments(movie, userPerson);
 
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean showPersonDialog() {
+        try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/personLayout.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Username");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Set the movie into the controller.
+            PersonLayoutController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.callSetUserPerson(userPerson);
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
 
@@ -283,8 +315,6 @@ public class Main extends Application {
         movieTablePopulationLoop(resultSet, movieData);
     }
 
-
-
     /**
      * Populate the movie table with movies
      * @param listType 0 = published, 1 = new / edit requests, 2 = delete requests, 3 = bookmarked (for that user)
@@ -324,6 +354,8 @@ public class Main extends Application {
         movieTablePopulationLoop(populateResult, movieData);
     }
 
+
+
     public static void movieTablePopulationLoop(ResultSet populateResult, ObservableList<Movie> movieData) throws SQLException {
         while (populateResult.next()) {
             Movie newMovie = new Movie();
@@ -339,6 +371,8 @@ public class Main extends Application {
             movieData.add(newMovie);
         }
     }
+
+
 
 
     @Override

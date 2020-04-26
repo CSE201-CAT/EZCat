@@ -15,6 +15,13 @@ public class DatabaseConnector {
                 username, password);
     }
 
+    /**
+     * Returns the data as an observable list of People.
+     * @return
+     */
+    public ObservableList<Person> getPeopleData() {
+        return peopleData;
+    }
 
     public ObservableList<Movie> getMoviesList() throws SQLException {
         // query the DB
@@ -360,6 +367,67 @@ public class DatabaseConnector {
         return populateResult;
     }
 
+    public ResultSet populateMovieCommentsTable(int personID, ObservableList<MovieNameAndComment> commentData) throws SQLException {
+        commentData.clear();  // ensure empty
+        Statement populateTable = databaseConnection.createStatement();
+        ResultSet populateResult;
+        String query = "SELECT * " +
+                "FROM comments " +
+                "WHERE " +
+                "person_id = ?";
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setInt(1, personID);
+
+        populateResult = preparedStatement.executeQuery();
+
+        movieCommentTablePopulationLoop(populateResult, movieCommentData);
+
+        // Add to the list
+        return populateResult;
+    }
+
+    public ObservableList<Movie> movieData = FXCollections.observableArrayList();
+
+    public ResultSet populateMoviesTable(int movieID, ObservableList<Movie> movieData) throws SQLException {
+        movieData.clear();  // ensure empty
+        Statement populateTable = databaseConnection.createStatement();
+        ResultSet populateResult;
+        String query = "SELECT * " +
+                "FROM movies " +
+                "WHERE " +
+                "movie_id = ?";
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setInt(1, movieID);
+
+        populateResult = preparedStatement.executeQuery();
+        populateResult = preparedStatement.executeQuery();
+
+        Main.movieTablePopulationLoop(populateResult, movieData);
+
+        // Add to the list
+        return populateResult;
+    }
+
+    public ObservableList<MovieNameAndComment> getMovieCommentData() {
+        return movieCommentData;
+    }
+
+    public ObservableList<Person> peopleData = FXCollections.observableArrayList();
+    public ObservableList<MovieNameAndComment> movieCommentData = FXCollections.observableArrayList();
+
+    public ResultSet populatePeopleTable() throws SQLException {
+        peopleData.clear();
+        Statement populateTable = databaseConnection.createStatement();
+        ResultSet populateResult;
+        populateResult = populateTable.executeQuery("Select * from people");
+
+
+        // Add to the list
+        peopleTablePopulationLoop(populateResult, peopleData);
+
+        return populateResult;
+    }
+
     public static ObservableList<Comment> commentTablePopulationLoop(ResultSet populateResult,
                                                   ObservableList<Comment> commentData) throws SQLException {
         while (populateResult.next()) {
@@ -373,6 +441,93 @@ public class DatabaseConnector {
         }
 
         return commentData;
+    }
+    public ObservableList<MovieNameAndComment> movieCommentTablePopulationLoop(ResultSet populateResult,
+                                                                     ObservableList<MovieNameAndComment> commentData) throws SQLException {
+        while (populateResult.next()) {
+            Comment newComment = new Comment();
+            newComment.setComment(populateResult.getString("comment"));
+            newComment.setMovieId(populateResult.getInt("movie_id"));
+            newComment.setPersonId(populateResult.getInt("person_id"));
+            Movie movieName = new Movie();
+            movieName = getSpecificMovie(newComment.getMovieId());
+            MovieNameAndComment mvncm = new MovieNameAndComment(movieName.getTitle(), newComment);
+            movieCommentData.add(mvncm);
+        }
+        return movieCommentData;
+    }
+
+    public static ObservableList<Person> peopleTablePopulationLoop(ResultSet populateResult, ObservableList<Person> peopleData) throws SQLException {
+        while (populateResult.next()) {
+            Person newPerson = new Person();
+            newPerson.setId(populateResult.getInt("person_id"));
+            newPerson.setUsername(populateResult.getString("username"));
+
+            // add to list
+            peopleData.add(newPerson);
+        }
+        return peopleData;
+    }
+
+    public void filterPersonTable(String filter) throws SQLException {
+        peopleData.clear();
+        PreparedStatement preparedStatement = null;
+
+
+        String query = "SELECT * FROM people WHERE (person_id LIKE ?" +
+                "OR username LIKE ?" + ")";
+        preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setString(1, "%" + filter + "%");
+        preparedStatement.setString(2, "%" + filter + "%");
+
+
+        // execute prepared statement
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        // Add to the list
+        peopleTablePopulationLoop(resultSet, peopleData);
+    }
+
+    public Person getSpecificPerson(String personUsername) throws SQLException {
+        Statement populateTable = databaseConnection.createStatement();
+        ResultSet populateResult;
+
+        populateResult = populateTable.executeQuery("Select * from people WHERE (username = ?)");
+        Person specificPerson = new Person();
+        specificPerson.setId(populateResult.getInt("person_id"));
+        specificPerson.setUsername(populateResult.getString("username"));
+        return specificPerson;
+    }
+
+    public Movie getSpecificMovie(int movieID) throws SQLException {
+        String query = "SELECT title FROM movie WHERE movie_id = ?";
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setString(1, movieID+"");
+
+        // execute prepared statement
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            Movie newMovie = new Movie();
+            newMovie.setTitle(resultSet.getString("title"));
+            // add to list
+            movieData.add(newMovie);
+        }
+        return movieData.get(0);
+    }
+
+    public void addFollow(Person follower, Person personFollowed) throws SQLException {
+        // Person personToFollow = getSpecificPerson(personFollowed);
+        // setup insert statement
+        String query2 = "INSERT INTO followers " +
+                "(follower_id, following_id) " +
+                "VALUES (?, ?);";
+
+        // create prepared statement
+        PreparedStatement preparedStatement2 = databaseConnection.prepareStatement(query2);
+        preparedStatement2.setInt(1, follower.getId());
+        preparedStatement2.setInt(2, personFollowed.getId());
+        // execute prepared statement
+        preparedStatement2.execute();
     }
 
 }

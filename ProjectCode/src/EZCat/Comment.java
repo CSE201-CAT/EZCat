@@ -49,6 +49,12 @@ public class Comment {
         return comment;
     }
 
+    public StringProperty getMovieProperty() {
+        String strMovieId = movieId + "";
+        strMovieId = strMovieId.substring(strMovieId.indexOf(": "), strMovieId.indexOf("]"));
+        return new SimpleStringProperty(strMovieId);
+    }
+
     public int getPersonId() {
         return personId.get();
     }
