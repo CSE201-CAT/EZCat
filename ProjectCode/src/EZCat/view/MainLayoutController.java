@@ -12,36 +12,42 @@ import java.util.ArrayList;
 public class MainLayoutController {
 
     // Reference to the main application.
-    private Main mainApp;
+    public Main mainApp;
 
     @FXML
     public TableView<Movie> movieTable;
     @FXML
-    private TableColumn<Movie, String> titleColumn;
+    public TableColumn<Movie, String> titleColumn;
     @FXML
-    private TableColumn<Movie, String> genreColumn;
+    public TableColumn<Movie, String> genreColumn;
     @FXML
-    private Label titleLabel;
+    public Label titleLabel;
     @FXML
-    private Label genreLabel;
+    public Label genreLabel;
     @FXML
-    private Label yearLabel;
+    public Label yearLabel;
     @FXML
-    private Label directorLabel;
+    public Label directorLabel;
     @FXML
-    private Label ratingLabel;
+    public Label ratingLabel;
     @FXML
-    private Label studioLabel;
+    public Label studioLabel;
     @FXML
     public Button acceptRequestButton;
     @FXML
-    private TextField searchBarField;
+    public TextField searchBarField;
     @FXML
     public Button bookmarkButton;
     @FXML
     public Button newButton;
     @FXML
     public Button editButton;
+    @FXML
+    public Button ratingButton;
+    @FXML
+    public Button commentButton;
+    @FXML
+    public Button deleteButton;
 
 
 

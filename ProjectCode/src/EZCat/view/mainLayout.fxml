@@ -78,16 +78,16 @@
                       <Label fx:id="yearLabel" prefHeight="17.0" prefWidth="132.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                       <Label fx:id="directorLabel" prefHeight="17.0" prefWidth="138.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                       <Label fx:id="ratingLabel" prefHeight="17.0" prefWidth="140.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <Button mnemonicParsing="false" onAction="#handleViewCommentsPage" prefHeight="26.0" prefWidth="137.0" text="Comments" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <Button fx:id="commentButton" mnemonicParsing="false" onAction="#handleViewCommentsPage" prefHeight="26.0" prefWidth="137.0" text="Comments" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                               <Label text="Studio" GridPane.rowIndex="5" />
                               <Label fx:id="studioLabel" prefHeight="17.0" prefWidth="140.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <Button fx:id="acceptRequestButton" disable="true" mnemonicParsing="false" onAction="#handleAcceptRequest" prefHeight="25.0" prefWidth="150.0" text="Accept Request" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                              <Button mnemonicParsing="false" onAction="#handleRateMovieButton" prefHeight="27.0" prefWidth="150.0" text="Rate Movie" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Button fx:id="ratingButton" mnemonicParsing="false" onAction="#handleRateMovieButton" prefHeight="27.0" prefWidth="150.0" text="Rate Movie" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                     </children>
                   </GridPane>
                   <ButtonBar layoutX="54.0" layoutY="250.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                     <buttons>
-                              <Button fx:id="bookmarkButton" mnemonicParsing="false" onAction="#handleBookmarkButton" text="Bookmark" />
+                      <Button fx:id="bookmarkButton" mnemonicParsing="false" onAction="#handleBookmarkButton" text="Bookmark" />
                       <Button fx:id="newButton" mnemonicParsing="false" onAction="#handleNewMovie" text="New..." />
                       <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEditMovie" text="Edit..." />
                       <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteMovie" text="Delete" />

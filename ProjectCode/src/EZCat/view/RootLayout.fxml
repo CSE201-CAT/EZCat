@@ -9,7 +9,7 @@
       <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <buttons>
           <Button mnemonicParsing="false" onAction="#handleViewProfileButton" text="View Profile" />
-            <Button mnemonicParsing="false" onAction="#handlePeopleViewButton" text="People View" />
+            <Button fx:id="peopleButton" mnemonicParsing="false" onAction="#handlePeopleViewButton" text="People View" />
             <Button fx:id="bookmarksButton" mnemonicParsing="false" onAction="#handleBookmarksViewButton" text="Bookmarks" />
             <Button fx:id="newEditViewButton" disable="true" mnemonicParsing="false" onAction="#handleNewEditViewButton" text="New / Edit Requests" />
             <Button fx:id="deleteViewButton" disable="true" minWidth="69.0" mnemonicParsing="false" onAction="#handleDeleteViewButton" prefHeight="25.0" text="Delete Requests" />

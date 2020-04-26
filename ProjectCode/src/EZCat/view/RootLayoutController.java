@@ -2,7 +2,9 @@ package EZCat.view;
 
 import EZCat.DatabaseConnector;
 import EZCat.Main;
+import EZCat.Movie;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 
@@ -17,10 +19,13 @@ public class RootLayoutController {
     public Button deleteViewButton;
     @FXML
     public Button bookmarksButton;
+    @FXML
+    public Button peopleButton;
 
     public boolean newEditClicked = false;
     public boolean deleteClicked = false;
     public boolean bookmarkClicked = false;
+    public boolean peopleClicked = false;
 
     @FXML
     private void handleViewProfileButton() {
@@ -30,6 +35,10 @@ public class RootLayoutController {
     @FXML
     private void handlePeopleViewButton() {
         System.out.println("in people view");
+        boolean okClicked = mainApp.showPersonDialog();
+        if (okClicked) {
+            // showPersonDetails();
+        }
     }
 
     @FXML
