@@ -479,8 +479,7 @@ public class DatabaseConnector {
             newComment.setComment(populateResult.getString("comment"));
             newComment.setMovieId(populateResult.getInt("movie_id"));
             newComment.setPersonId(populateResult.getInt("person_id"));
-            Movie movieName = new Movie();
-            movieName = getSpecificMovie(newComment.getMovieId());
+            Movie movieName = getSpecificMovie(newComment.getMovieId());
             MovieNameAndComment mvncm = new MovieNameAndComment(movieName.getTitle(), newComment);
             movieCommentData.add(mvncm);
         }
@@ -537,17 +536,18 @@ public class DatabaseConnector {
     public Movie getSpecificMovie(int movieID) throws SQLException {
         String query = "SELECT title FROM movie WHERE movie_id = ?";
         PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
-        preparedStatement.setString(1, movieID+"");
+        preparedStatement.setString(1, String.valueOf(movieID));
 
+        ArrayList<Movie> movieResultsList = new ArrayList<>();
         // execute prepared statement
         ResultSet resultSet = preparedStatement.executeQuery();
         while (resultSet.next()) {
             Movie newMovie = new Movie();
             newMovie.setTitle(resultSet.getString("title"));
             // add to list
-            movieData.add(newMovie);
+            movieResultsList.add(newMovie);
         }
-        return movieData.get(0);
+        return movieResultsList.get(0);
     }
 
     public void addFollow(Person follower, Person personFollowed) throws SQLException {
