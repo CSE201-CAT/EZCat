@@ -23,6 +23,10 @@ public class DatabaseConnector {
         return peopleData;
     }
 
+    public ObservableList<Person> getFollowingData() {
+        return followingData;
+    }
+
     public ObservableList<Movie> getMoviesList() throws SQLException {
         // query the DB
         Statement testS = databaseConnection.createStatement();
@@ -52,7 +56,7 @@ public class DatabaseConnector {
         preparedStatement.setInt(6, mv.getPublished() ? 1 : 0);
         preparedStatement.setInt(7, mv.getToDelete() ? 1 : 0);
         preparedStatement.setInt(8, mv.getOldMovieID());
-
+        System.out.println(preparedStatement.toString());
         // execute prepared statement
         preparedStatement.execute();
     }
@@ -388,6 +392,8 @@ public class DatabaseConnector {
 
     public ObservableList<Movie> movieData = FXCollections.observableArrayList();
 
+    public ObservableList<Person> followingData = FXCollections.observableArrayList();
+
     public ResultSet populateMoviesTable(int movieID, ObservableList<Movie> movieData) throws SQLException {
         movieData.clear();  // ensure empty
         Statement populateTable = databaseConnection.createStatement();
@@ -428,6 +434,29 @@ public class DatabaseConnector {
         return populateResult;
     }
 
+    public ResultSet populateFollowingTable(Person userPerson) throws SQLException {
+        followingData.clear();
+        Statement populateTable = databaseConnection.createStatement();
+        ResultSet populateResult;
+        populateResult = populateTable.executeQuery("Select * from followers WHERE follower_id = " + userPerson.getId());
+        // Add to the list
+        // followingTablePopulationLoop(populateResult, followingData);
+
+        return populateResult;
+    }
+
+    public ObservableList<Person> followingTablePopulationLoop(ResultSet populateResult,
+                                                                     ObservableList<Person> followingData) throws SQLException {
+        while (populateResult.next()) {
+            Person newPerson = new Person();
+            newPerson.setId(populateResult.getInt("following_id"));
+            // add to list
+            followingData.add(newPerson);
+        }
+
+        return followingData;
+    }
+
     public static ObservableList<Comment> commentTablePopulationLoop(ResultSet populateResult,
                                                   ObservableList<Comment> commentData) throws SQLException {
         while (populateResult.next()) {
@@ -442,6 +471,7 @@ public class DatabaseConnector {
 
         return commentData;
     }
+
     public ObservableList<MovieNameAndComment> movieCommentTablePopulationLoop(ResultSet populateResult,
                                                                      ObservableList<MovieNameAndComment> commentData) throws SQLException {
         while (populateResult.next()) {
@@ -483,19 +513,24 @@ public class DatabaseConnector {
 
         // execute prepared statement
         ResultSet resultSet = preparedStatement.executeQuery();
-
         // Add to the list
         peopleTablePopulationLoop(resultSet, peopleData);
     }
 
-    public Person getSpecificPerson(String personUsername) throws SQLException {
-        Statement populateTable = databaseConnection.createStatement();
-        ResultSet populateResult;
 
-        populateResult = populateTable.executeQuery("Select * from people WHERE (username = ?)");
+
+    public Person getSpecificPerson(int person_id) throws SQLException {
+        String query = "SELECT username, person_id FROM people WHERE person_id = ?";
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setString(1, person_id+"");
+
+        // execute prepared statement
+        ResultSet resultSet = preparedStatement.executeQuery();
         Person specificPerson = new Person();
-        specificPerson.setId(populateResult.getInt("person_id"));
-        specificPerson.setUsername(populateResult.getString("username"));
+        while (resultSet.next()) {
+            specificPerson.setUsername(resultSet.getString("username"));
+            specificPerson.setId(resultSet.getInt("person_id"));
+        }
         return specificPerson;
     }
 
@@ -518,16 +553,16 @@ public class DatabaseConnector {
     public void addFollow(Person follower, Person personFollowed) throws SQLException {
         // Person personToFollow = getSpecificPerson(personFollowed);
         // setup insert statement
-        String query2 = "INSERT INTO followers " +
-                "(follower_id, following_id) " +
-                "VALUES (?, ?);";
+        String query = "INSERT INTO followers (throwaway, follower_id, following_id) VALUES (?,?,?);";
 
         // create prepared statement
-        PreparedStatement preparedStatement2 = databaseConnection.prepareStatement(query2);
-        preparedStatement2.setInt(1, follower.getId());
-        preparedStatement2.setInt(2, personFollowed.getId());
+        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setInt(1, follower.getId()*personFollowed.getId()+follower.getId());
+        preparedStatement.setInt(2, follower.getId());
+        preparedStatement.setInt(3, personFollowed.getId());
         // execute prepared statement
-        preparedStatement2.execute();
+        System.out.println(preparedStatement.toString());
+        preparedStatement.execute();
     }
 
 }

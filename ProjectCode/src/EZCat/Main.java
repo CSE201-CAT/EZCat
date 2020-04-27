@@ -163,6 +163,35 @@ public class Main extends Application {
         }
     }
 
+    public boolean showSelfPersonDialog() {
+        try {
+            // Load the fxml file and create a new stage for the popup dialog.
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(Main.class.getResource("view/personSelfLayout.fxml"));
+            AnchorPane page = (AnchorPane) loader.load();
+
+            // Create the dialog Stage
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Following");
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(primaryStage);
+            Scene scene = new Scene(page);
+            dialogStage.setScene(scene);
+
+            // Set the movie into the controller.
+            PersonSelfLayoutController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setFollowing(userPerson);
+            // Show the dialog and wait until the user closes it
+            dialogStage.showAndWait();
+
+            return controller.isOkClicked();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean showPersonDialog() {
         try {
             // Load the fxml file and create a new stage for the popup dialog.

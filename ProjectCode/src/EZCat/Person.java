@@ -57,8 +57,7 @@ public class Person {
         return password.get();
     }
 
-    public void setPassword(String password) { this.password.set(password);
-    }
+    public void setPassword(String password) { this.password.set(password); }
 
     public StringProperty passwordProperty() {
         return password;
@@ -72,9 +71,7 @@ public class Person {
         this.id.set(id);
     }
 
-    public IntegerProperty idProperty() {
-        return id;
-    }
+    public StringProperty idProperty() { return new SimpleStringProperty(id+""); }
 
     public boolean getAdmin() {
         return isAdmin.get();
