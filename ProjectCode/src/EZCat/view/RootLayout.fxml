@@ -4,7 +4,7 @@
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="600.00" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="EZCat.view.RootLayoutController">
+<BorderPane prefHeight="800.00" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="EZCat.view.RootLayoutController">
    <top>
       <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <buttons>
