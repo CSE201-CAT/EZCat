@@ -62,19 +62,39 @@ public class DatabaseConnector {
     }
 
     public void deleteMovie(Movie mv) throws SQLException {
-        // setup delete statement
-        String query = " DELETE FROM movie where movie_id = ?";
-        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
-        preparedStatement.setInt(1, mv.getId());
-
-        // execute prepared statement
-        preparedStatement.execute();
+        deleteMovie(mv.getId());
     }
 
     public void deleteMovie(int id) throws SQLException {
-        // setup delete statement
-        String query = " DELETE FROM movie where movie_id = ?";
+        // setup delete statements
+
+        // delete from bookmarks
+        String query = " DELETE FROM bookmarks where movie_id = ?";
         PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setInt(1, id);
+
+        // execute prepared statement
+        preparedStatement.execute();
+
+        // delete from comments
+        query = " DELETE FROM comments where movie_id = ?";
+        preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setInt(1, id);
+
+        // execute prepared statement
+        preparedStatement.execute();
+
+        // delete from ratings
+        query = " DELETE FROM ratings where movie_id = ?";
+        preparedStatement = databaseConnection.prepareStatement(query);
+        preparedStatement.setInt(1, id);
+
+        // execute prepared statement
+        preparedStatement.execute();
+
+        // delete from movies
+        query = " DELETE FROM movie where movie_id = ?";
+        preparedStatement = databaseConnection.prepareStatement(query);
         preparedStatement.setInt(1, id);
 
         // execute prepared statement
@@ -394,26 +414,6 @@ public class DatabaseConnector {
 
     public ObservableList<Person> followingData = FXCollections.observableArrayList();
 
-    public ResultSet populateMoviesTable(int movieID, ObservableList<Movie> movieData) throws SQLException {
-        movieData.clear();  // ensure empty
-        Statement populateTable = databaseConnection.createStatement();
-        ResultSet populateResult;
-        String query = "SELECT * " +
-                "FROM movies " +
-                "WHERE " +
-                "movie_id = ?";
-        PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
-        preparedStatement.setInt(1, movieID);
-
-        populateResult = preparedStatement.executeQuery();
-        populateResult = preparedStatement.executeQuery();
-
-        Main.movieTablePopulationLoop(populateResult, movieData);
-
-        // Add to the list
-        return populateResult;
-    }
-
     public ObservableList<MovieNameAndComment> getMovieCommentData() {
         return movieCommentData;
     }
@@ -553,7 +553,7 @@ public class DatabaseConnector {
     public void addFollow(Person follower, Person personFollowed) throws SQLException {
         // Person personToFollow = getSpecificPerson(personFollowed);
         // setup insert statement
-        String query = "INSERT INTO followers (throwaway, follower_id, following_id) VALUES (?,?,?);";
+        String query = "INSERT INTO followers (follower_id, following_id) VALUES (?,?,?);";
 
         // create prepared statement
         PreparedStatement preparedStatement = databaseConnection.prepareStatement(query);
