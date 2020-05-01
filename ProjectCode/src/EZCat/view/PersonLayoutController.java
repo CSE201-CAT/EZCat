@@ -41,7 +41,7 @@ public class PersonLayoutController {
     public TextField searchBarField;
 
     @FXML
-    private TableView<Person> personTable;
+    public TableView<Person> personTable;
 
     @FXML
     public TableColumn<Person, String> usernameColumn;
@@ -54,13 +54,13 @@ public class PersonLayoutController {
         usernameColumn.setCellValueFactory(cellData -> cellData.getValue().usernameProperty());
 
         // clear movie details
-        showPersonDetails(null);
+        showPersonDetails(null, false);
 
         // Listen for selection changes and show the movie details when changed
         personTable.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     try {
-                        showPersonDetails(newValue);
+                        showPersonDetails(newValue, false);
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                     }
@@ -107,12 +107,19 @@ public class PersonLayoutController {
         databaseConnector.addFollow(userPerson, personTable.getItems().get(selectedIndex));
     }
 
-    private void showPersonDetails(Person person) throws SQLException {
+    public void showPersonDetails(Person person, boolean currentUser) throws SQLException {
         if (person != null) {
             movieCommentTable.setItems(databaseConnector.getMovieCommentData());
             // Fill the labels with info from the person object.
             usernameLabel.setText(person.getUsername());
-            setMovieComment();
+
+            if (currentUser) {
+                // show current user profile by default
+                setMovieComment(true);
+            } else {
+                setMovieComment(false);
+            }
+
             int i = 0;
             movieCommentTable.setItems(databaseConnector.getMovieCommentData());
             commentColumn.setCellValueFactory(cellData -> cellData.getValue().getComment().commentProperty());
@@ -153,7 +160,7 @@ public class PersonLayoutController {
         }
     }
 
-    public void setMovieComment() {
+    public void setMovieComment(boolean currentUser) {
         person = userPerson;  // save the current user
         int selectedIndex = personTable.getSelectionModel().getSelectedIndex();
         movieCommentData.clear();  // ensure empty to reduce copy size as it will be refreshed anyway
@@ -165,7 +172,15 @@ public class PersonLayoutController {
             String password = "generalPublicPassword";
             databaseConnector = new DatabaseConnector(username, password);
 
-            ResultSet list = databaseConnector.populateMovieCommentsTable( personTable.getItems().get(selectedIndex).getId(), movieCommentData);
+            ResultSet list;
+            if (currentUser) {
+                // show current user by default
+                 list = databaseConnector.populateMovieCommentsTable(person.getId(), movieCommentData);
+            } else {
+                list = databaseConnector.populateMovieCommentsTable(personTable.getItems().get(selectedIndex).getId(),
+                        movieCommentData);
+            }
+
 
             while (list.next()) {
                 Comment newComment = new Comment();

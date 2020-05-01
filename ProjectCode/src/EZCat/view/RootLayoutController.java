@@ -29,16 +29,12 @@ public class RootLayoutController {
 
     @FXML
     private void handleViewProfileButton() {
-        System.out.println("in view profile");
+        boolean okClicked = mainApp.showPersonDialog(true);
     }
 
     @FXML
     private void handlePeopleViewButton() {
-        System.out.println("in people view");
-        boolean okClicked = mainApp.showPersonDialog();
-        if (okClicked) {
-            // showPersonDetails();
-        }
+        boolean okClicked = mainApp.showPersonDialog(false);
     }
 
     @FXML

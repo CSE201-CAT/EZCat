@@ -192,7 +192,7 @@ public class Main extends Application {
         }
     }
 
-    public boolean showPersonDialog() {
+    public boolean showPersonDialog(boolean showSelf) {
         try {
             // Load the fxml file and create a new stage for the popup dialog.
             FXMLLoader loader = new FXMLLoader();
@@ -201,7 +201,7 @@ public class Main extends Application {
 
             // Create the dialog Stage
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Username");
+            dialogStage.setTitle("People");
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(primaryStage);
             Scene scene = new Scene(page);
@@ -211,6 +211,11 @@ public class Main extends Application {
             PersonLayoutController controller = loader.getController();
             controller.setDialogStage(dialogStage);
             controller.callSetUserPerson(userPerson);
+
+            if (showSelf) {
+                // show the current user's profile
+                controller.showPersonDetails(userPerson, true);
+            }
             // Show the dialog and wait until the user closes it
             dialogStage.showAndWait();
 
